@@ -29,6 +29,7 @@ La aplicación es un prototipo académico: no incluye pagos reales, base de dato
 ## Ejecución
 
 La aplicación AgriGo se encuentra en `frontend`. Para ejecutarla:
+Se requiere Node.js 24.15 o superior.
 
 ```bash
 cd frontend
