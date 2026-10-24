@@ -1,0 +1,119 @@
+<div class="marketplace-page">
+  <header class="site-header">
+    <a class="brand" routerLink="/" aria-label="AgriGo, ir al inicio">
+      <span class="brand-mark">A</span>
+      <span>AgriGo</span>
+    </a>
+
+    <nav aria-label="Navegación principal">
+      <a class="nav-link active" routerLink="/">Marketplace</a>
+      <a class="nav-link" href="#productor">Productores locales</a>
+    </nav>
+
+    <a class="header-action" href="#catalogo">Explorar productos <span aria-hidden="true">↘</span></a>
+  </header>
+
+  <main>
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-copy">
+        <p class="eyebrow"><span class="eyebrow-dot"></span> Productos del campo colombiano</p>
+        <h1 id="hero-title">Del campo a tu mesa, <em>sin rodeos.</em></h1>
+        <p class="hero-description">
+          Encuentra alimentos frescos y conoce a las personas que los cultivan.
+          Compra directo a productores locales.
+        </p>
+        <a class="hero-link" href="#catalogo">Ver productos <span aria-hidden="true">↓</span></a>
+      </div>
+
+      <div class="hero-image" role="img" aria-label="Canasta con productos agrícolas frescos">
+        <div class="hero-note">
+          <span class="note-mark" aria-hidden="true">01</span>
+          <span>Cosechado cerca,<br />compartido contigo.</span>
+        </div>
+      </div>
+      <div class="hero-index" aria-hidden="true">AG / 01</div>
+    </section>
+
+    <section class="catalog" id="catalogo" aria-labelledby="catalog-title">
+      <div class="catalog-heading">
+        <div>
+          <p class="eyebrow">El mercado de hoy</p>
+          <h2 id="catalog-title">Recién cosechado</h2>
+        </div>
+        <p class="catalog-intro">Productos de pequeños productores, listos para llegar a tu hogar.</p>
+      </div>
+
+      <div class="catalog-controls">
+        <label class="search-field">
+          <span class="search-symbol" aria-hidden="true">⌕</span>
+          <span class="visually-hidden">Buscar productos o productores</span>
+          <input
+            type="search"
+            placeholder="Busca un producto o productor"
+            [value]="searchTerm()"
+            (input)="updateSearch($event)"
+          />
+        </label>
+
+        <div class="category-list" aria-label="Filtrar por categoría">
+          <button
+            *ngFor="let category of categories"
+            type="button"
+            [class.selected]="selectedCategory() === category"
+            [attr.aria-pressed]="selectedCategory() === category"
+            (click)="selectCategory(category)"
+          >
+            {{ category }}
+          </button>
+        </div>
+      </div>
+
+      <div class="results-line" aria-live="polite">
+        <span>{{ filteredProducts.length }} productos</span>
+        <span>Precios en pesos colombianos</span>
+      </div>
+
+      <div class="product-grid" *ngIf="filteredProducts.length > 0; else emptyResults">
+        <article class="product-card" *ngFor="let product of filteredProducts">
+          <a class="product-image" [routerLink]="['/producto', product.id]" [attr.aria-label]="'Ver ' + product.name">
+            <img [src]="product.imageUrl" [alt]="product.name" />
+            <span class="image-category">{{ product.category }}</span>
+          </a>
+
+          <div class="product-info">
+            <p class="producer-line"><span class="producer-dot"></span>{{ product.producer }} · {{ product.location }}</p>
+            <h3><a [routerLink]="['/producto', product.id]">{{ product.name }}</a></h3>
+            <p class="product-description">{{ product.description }}</p>
+            <div class="product-footer">
+              <p class="product-price">{{ product.price | currency:'COP':'symbol-narrow':'1.0-0' }} <span>/ {{ product.unit }}</span></p>
+              <a class="detail-link" [routerLink]="['/producto', product.id]" [attr.aria-label]="'Ver detalle de ' + product.name">Ver producto <span aria-hidden="true">↗</span></a>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <ng-template #emptyResults>
+        <div class="empty-state">
+          <p class="eyebrow">Sin coincidencias</p>
+          <h3>No encontramos ese producto.</h3>
+          <p>Prueba con otro nombre o explora todas las categorías.</p>
+          <button type="button" (click)="clearFilters()">Limpiar búsqueda</button>
+        </div>
+      </ng-template>
+    </section>
+
+    <section class="producer-band" id="productor">
+      <p>AgriGo acerca a quienes cultivan con quienes disfrutan sus cosechas.</p>
+      <span>Un mercado local, hecho para Colombia.</span>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <a class="brand" routerLink="/">
+      <span class="brand-mark">A</span>
+      <span>AgriGo</span>
+    </a>
+    <span>Productos locales, conexión directa.</span>
+    <span>Electiva III · Proyecto académico</span>
+  </footer>
+</div>

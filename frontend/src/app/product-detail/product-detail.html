@@ -1,0 +1,75 @@
+<main class="detail-page" *ngIf="product as item; else missingProduct">
+  <header class="detail-header">
+    <a class="brand" routerLink="/">
+      <span class="brand-mark">A</span>
+      <span>AgriGo</span>
+    </a>
+    <a class="back-link" routerLink="/">Volver al mercado <span aria-hidden="true">↗</span></a>
+  </header>
+
+  <div class="detail-content">
+    <nav class="breadcrumb" aria-label="Ruta de navegación">
+      <a routerLink="/">Marketplace</a>
+      <span aria-hidden="true">/</span>
+      <span>{{ item.category }}</span>
+      <span aria-hidden="true">/</span>
+      <span class="current">{{ item.name }}</span>
+    </nav>
+
+    <section class="product-layout">
+      <div class="product-visual">
+        <img [src]="item.imageUrl" [alt]="item.name" />
+        <span class="image-label">Producto local</span>
+      </div>
+
+      <div class="product-copy">
+        <p class="eyebrow">{{ item.category }}</p>
+        <h1>{{ item.name }}</h1>
+        <p class="producer"><span class="producer-mark">AG</span> Cultivado por <strong>{{ item.producer }}</strong></p>
+
+        <div class="price-panel">
+          <p class="price">{{ item.price | currency:'COP':'symbol-narrow':'1.0-0' }} <span>/ {{ item.unit }}</span></p>
+          <p class="price-note">Precio publicado por el productor</p>
+        </div>
+
+        <div class="availability">
+          <span class="availability-dot"></span>
+          <span>{{ item.stock }} {{ item.unit }} disponibles</span>
+        </div>
+
+        <div class="description-block">
+          <h2>Sobre este producto</h2>
+          <p>{{ item.description }}</p>
+        </div>
+
+        <div class="origin-block">
+          <span class="origin-icon" aria-hidden="true">⌖</span>
+          <div>
+            <p class="origin-label">Origen</p>
+            <p class="origin-place">{{ item.location }}</p>
+          </div>
+        </div>
+
+        <a class="continue-link" routerLink="/">Seguir explorando productos <span aria-hidden="true">→</span></a>
+      </div>
+    </section>
+
+    <section class="seller-note" aria-label="Información del vendedor">
+      <span class="seller-note-mark" aria-hidden="true">A</span>
+      <p>Compra local, conoce quién cultiva lo que llega a tu mesa.</p>
+      <span>AgriGo · Del campo cerca de ti</span>
+    </section>
+  </div>
+</main>
+
+<ng-template #missingProduct>
+  <main class="missing-page">
+    <a class="brand" routerLink="/">
+      <span class="brand-mark">A</span>
+      <span>AgriGo</span>
+    </a>
+    <p class="eyebrow">Producto no disponible</p>
+    <h1>No encontramos ese producto.</h1>
+    <a class="continue-link" routerLink="/">Regresar al Marketplace <span aria-hidden="true">→</span></a>
+  </main>
+</ng-template>
