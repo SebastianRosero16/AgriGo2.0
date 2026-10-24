@@ -28,10 +28,10 @@ La aplicación es un prototipo académico: no incluye pagos reales, base de dato
 
 ## Ejecución
 
-El proyecto Angular se encuentra en `book-angular-6b`. Para ejecutarlo:
+La aplicación AgriGo se encuentra en `frontend`. Para ejecutarla:
 
 ```bash
-cd book-angular-6b
+cd frontend
 npm install
 npm start
 ```
