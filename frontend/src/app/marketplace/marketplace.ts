@@ -12,7 +12,7 @@ import { Product } from '../models/product.model';
 })
 export class Marketplace {
   products = signal<Product[]>(PRODUCTS);
-  categories = ['Todos', 'Frutas', 'Verduras', 'Granos y tuberculos'];
+  categories = ['Todos', 'Frutas', 'Verduras', 'Granos y tubérculos'];
   searchTerm = signal('');
   selectedCategory = signal('Todos');
 
