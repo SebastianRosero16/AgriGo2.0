@@ -52,6 +52,8 @@ npm audit
 
 El catálogo inicial, los precios y el inventario son datos de ejemplo. El carrito y las órdenes se guardan en `localStorage`; cualquier persona con acceso al navegador puede modificar esos datos desde las herramientas de desarrollo. Esta aplicación no ofrece autenticación, autorización, pagos reales ni seguridad de inventario. Esas garantías requieren validación y persistencia en un backend confiable.
 
+El checkout de demostración también guarda los datos de contacto y dirección ingresados en el navegador junto con la orden. No uses información personal real en esta versión académica.
+
 ## Organización del frontend
 
 - `src/app/shared/` contiene componentes visuales reutilizables, iconografía SVG propia e imágenes locales optimizadas.

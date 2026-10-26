@@ -1,11 +1,23 @@
 import { computed, Injectable, signal } from '@angular/core';
-import { CART_STORAGE_KEY, MAX_QUANTITY_PER_PRODUCT, SHIPPING_COST } from './purchase.constants';
+import {
+  CART_STORAGE_KEY,
+  MAX_QUANTITY_PER_PRODUCT,
+  ORDERS_STORAGE_KEY,
+  SHIPPING_COST,
+} from './purchase.constants';
 import { INITIAL_CART } from './purchase.data';
-import { CartItem, Product } from './purchase.models';
+import {
+  CartItem,
+  PlaceOrderInput,
+  Product,
+  PurchaseOrder,
+  ShippingDetails,
+} from './purchase.models';
 
 @Injectable({ providedIn: 'root' })
 export class PurchaseStore {
   readonly cart = signal<CartItem[]>([]);
+  readonly orders = signal<PurchaseOrder[]>([]);
   readonly persistenceNotice = signal('');
 
   readonly cartCount = computed(() =>
@@ -18,6 +30,7 @@ export class PurchaseStore {
 
   constructor() {
     this.cart.set(this.readCart());
+    this.orders.set(this.readOrders());
   }
 
   changeQuantity(productId: string, change: -1 | 1): void {
@@ -40,6 +53,38 @@ export class PurchaseStore {
     this.saveCart(this.cart().filter((item) => item.product.id !== productId));
   }
 
+  createOrder(shippingDetails: PlaceOrderInput): PurchaseOrder | null {
+    const items = this.cart().map((item) => ({
+      ...item,
+      product: { ...item.product },
+    }));
+    if (items.length === 0) {
+      return null;
+    }
+
+    const subtotal = items.reduce((total, item) => total + item.product.price * item.quantity, 0);
+    const order: PurchaseOrder = {
+      id: crypto.randomUUID(),
+      createdAt: new Date().toISOString(),
+      status: 'confirmed',
+      items,
+      subtotal,
+      shipping: SHIPPING_COST,
+      total: subtotal + SHIPPING_COST,
+      shippingDetails: { ...shippingDetails },
+    };
+    const nextOrders = [order, ...this.orders()];
+
+    this.orders.set(nextOrders);
+    this.persist(ORDERS_STORAGE_KEY, nextOrders);
+    this.saveCart([]);
+    return order;
+  }
+
+  findOrder(orderId: string): PurchaseOrder | null {
+    return this.orders().find((order) => order.id === orderId) ?? null;
+  }
+
   private readCart(): CartItem[] {
     const storedCart = this.readFromStorage(CART_STORAGE_KEY);
     if (storedCart === null) {
@@ -56,6 +101,23 @@ export class PurchaseStore {
     }
 
     return storedCart;
+  }
+
+  private readOrders(): PurchaseOrder[] {
+    const storedOrders = this.readFromStorage(ORDERS_STORAGE_KEY);
+    if (storedOrders === null) {
+      return [];
+    }
+
+    if (!Array.isArray(storedOrders) || !storedOrders.every((order) => this.isOrder(order))) {
+      this.persistenceNotice.set(
+        'El historial guardado no era válido; se inició un historial vacío.',
+      );
+      this.persist(ORDERS_STORAGE_KEY, []);
+      return [];
+    }
+
+    return storedOrders;
   }
 
   private readFromStorage(key: string): unknown | null {
@@ -111,6 +173,56 @@ export class PurchaseStore {
       typeof product.imageSrc === 'string' &&
       typeof product.imageAlt === 'string' &&
       item.quantity <= product.available
+    );
+  }
+
+  private isOrder(value: unknown): value is PurchaseOrder {
+    if (typeof value !== 'object' || value === null) {
+      return false;
+    }
+    const order = value as Partial<PurchaseOrder>;
+    if (!Array.isArray(order.items) || !order.items.every((item) => this.isCartItem(item))) {
+      return false;
+    }
+    const subtotal = order.items.reduce(
+      (total, item) => total + item.product.price * item.quantity,
+      0,
+    );
+    return (
+      typeof order.id === 'string' &&
+      order.id.length > 0 &&
+      typeof order.createdAt === 'string' &&
+      Number.isFinite(Date.parse(order.createdAt)) &&
+      order.status === 'confirmed' &&
+      order.items.length > 0 &&
+      typeof order.subtotal === 'number' &&
+      order.subtotal === subtotal &&
+      typeof order.shipping === 'number' &&
+      order.shipping === SHIPPING_COST &&
+      typeof order.total === 'number' &&
+      order.total === order.subtotal + order.shipping &&
+      this.isShippingDetails(order.shippingDetails)
+    );
+  }
+
+  private isShippingDetails(value: unknown): value is ShippingDetails {
+    if (typeof value !== 'object' || value === null) {
+      return false;
+    }
+    const details = value as Partial<ShippingDetails>;
+    return (
+      typeof details.fullName === 'string' &&
+      typeof details.phone === 'string' &&
+      typeof details.address === 'string' &&
+      typeof details.city === 'string' &&
+      typeof details.department === 'string' &&
+      typeof details.postalCode === 'string' &&
+      typeof details.deliveryDate === 'string' &&
+      (details.deliveryWindow === 'morning' ||
+        details.deliveryWindow === 'afternoon' ||
+        details.deliveryWindow === 'evening') &&
+      typeof details.instructions === 'string' &&
+      (details.paymentMethod === 'cash' || details.paymentMethod === 'bank-transfer')
     );
   }
 }

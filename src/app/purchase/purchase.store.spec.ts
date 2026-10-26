@@ -1,8 +1,25 @@
-import { CART_STORAGE_KEY } from './purchase.constants';
+import { CART_STORAGE_KEY, ORDERS_STORAGE_KEY } from './purchase.constants';
+import { PlaceOrderInput } from './purchase.models';
 import { PurchaseStore } from './purchase.store';
 
+const validShippingDetails: PlaceOrderInput = {
+  fullName: 'Héctor',
+  phone: '+57 300 123 4567',
+  address: 'Calle 10 # 20-30',
+  city: 'Bogotá',
+  department: 'Cundinamarca',
+  postalCode: '',
+  deliveryDate: '2026-10-25',
+  deliveryWindow: 'afternoon',
+  instructions: '',
+  paymentMethod: 'cash',
+};
+
 describe('PurchaseStore cart', () => {
-  beforeEach(() => localStorage.removeItem(CART_STORAGE_KEY));
+  beforeEach(() => {
+    localStorage.removeItem(CART_STORAGE_KEY);
+    localStorage.removeItem(ORDERS_STORAGE_KEY);
+  });
 
   it('initializes the demonstration cart and derives its subtotal', () => {
     const store = new PurchaseStore();
@@ -50,5 +67,36 @@ describe('PurchaseStore cart', () => {
 
     expect(store.cart()).toEqual([]);
     expect(store.cartCount()).toBe(0);
+  });
+
+  it('creates and persists an order snapshot before clearing the cart', () => {
+    const store = new PurchaseStore();
+    const order = store.createOrder(validShippingDetails);
+
+    expect(order).not.toBeNull();
+    expect(order?.items).toHaveLength(3);
+    expect(order?.total).toBe(64_200);
+    expect(store.findOrder(order?.id ?? '')).toEqual(order);
+    expect(store.cart()).toEqual([]);
+    expect(JSON.parse(localStorage.getItem(ORDERS_STORAGE_KEY) ?? '[]')).toEqual([order]);
+    expect(JSON.parse(localStorage.getItem(CART_STORAGE_KEY) ?? 'null')).toEqual([]);
+    expect(new PurchaseStore().findOrder(order?.id ?? '')).toEqual(order);
+  });
+
+  it('does not create an order when the cart is empty', () => {
+    localStorage.setItem(CART_STORAGE_KEY, JSON.stringify([]));
+    const store = new PurchaseStore();
+
+    expect(store.createOrder(validShippingDetails)).toBeNull();
+    expect(store.orders()).toEqual([]);
+  });
+
+  it('recovers from malformed saved orders without throwing', () => {
+    localStorage.setItem(ORDERS_STORAGE_KEY, JSON.stringify([{ items: {} }]));
+    const store = new PurchaseStore();
+
+    expect(store.orders()).toEqual([]);
+    expect(store.persistenceNotice()).toContain('historial guardado no era válido');
+    expect(JSON.parse(localStorage.getItem(ORDERS_STORAGE_KEY) ?? 'null')).toEqual([]);
   });
 });
