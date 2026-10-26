@@ -11,7 +11,12 @@
 
 .cart-list {
   display: grid;
-  gap: 0.8rem;
+  gap: 1.2rem;
+}
+
+.seller-group {
+  display: grid;
+  gap: 0.5rem;
 }
 
 .producer-card {
@@ -60,8 +65,17 @@
   margin: 0;
 }
 
+.producer-details p app-icon {
+  flex: 0 0 auto;
+}
+
 .producer-details app-icon {
   color: var(--green-700);
+}
+
+.seller-items {
+  display: grid;
+  gap: 0.65rem;
 }
 
 .producer-status {
@@ -120,6 +134,7 @@
 
 .button {
   display: inline-flex;
+  gap: 0.55rem;
   min-height: 44px;
   align-items: center;
   justify-content: center;
@@ -133,6 +148,11 @@
 
 .button:hover {
   background: var(--green-800);
+}
+
+.button app-icon {
+  width: 1.1rem;
+  height: 1.1rem;
 }
 
 @media (max-width: 820px) {

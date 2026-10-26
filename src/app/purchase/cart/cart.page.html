@@ -17,22 +17,31 @@
   @if (cart().length > 0) {
     <div class="cart-layout">
       <div class="cart-list">
-        <article class="producer-card">
-          <div class="producer-mark"><app-icon name="leaf" /></div>
-          <div class="producer-details">
-            <h2>Carlos Rodríguez</h2>
-            <p><app-icon name="mapPin" /> Productor local · Facatativá, Cundinamarca</p>
-          </div>
-          <span class="producer-status"><app-icon name="truck" /> Entrega local</span>
-        </article>
+        @for (group of sellerGroups(); track group.id) {
+          <section class="seller-group" [attr.aria-labelledby]="group.headingId">
+            <header class="producer-card">
+              <div class="producer-mark" aria-hidden="true"><app-icon name="leaf" /></div>
+              <div class="producer-details">
+                <h2 [id]="group.headingId">{{ group.producer }}</h2>
+                <p><app-icon name="mapPin" /> Productor local · {{ group.location }}</p>
+              </div>
+              <span class="producer-status">
+                {{ group.items.length }}
+                {{ group.items.length === 1 ? 'producto' : 'productos' }}
+              </span>
+            </header>
 
-        @for (item of cart(); track item.product.id; let first = $first) {
-          <app-cart-item-card
-            [item]="item"
-            [priority]="first"
-            (quantityChange)="changeQuantity(item, $event)"
-            (remove)="removeItem(item)"
-          />
+            <div class="seller-items">
+              @for (item of group.items; track item.product.id) {
+                <app-cart-item-card
+                  [item]="item"
+                  [priority]="item.product.id === priorityProductId"
+                  (quantityChange)="changeQuantity(item, $event)"
+                  (remove)="removeItem(item)"
+                />
+              }
+            </div>
+          </section>
         }
       </div>
 
@@ -44,10 +53,16 @@
     </div>
   } @else {
     <div class="empty-state">
-      <div class="empty-icon"><app-icon name="cart" /></div>
+      <div class="empty-icon" aria-hidden="true"><app-icon name="cart" /></div>
       <h2>Tu carrito está vacío</h2>
-      <p>Cuando agregues productos, aparecerán aquí para que puedas revisar tu pedido.</p>
-      <a class="button button-primary" routerLink="/orders">Ver mis pedidos</a>
+      <p>
+        Este flujo usa productos de demostración. Vuelve a cargarlos para probar el carrito y
+        finalizar un pedido.
+      </p>
+      <button class="button button-primary" type="button" (click)="restoreDemoCart()">
+        <app-icon name="cart" />
+        Cargar carrito de ejemplo
+      </button>
     </div>
   }
 </section>

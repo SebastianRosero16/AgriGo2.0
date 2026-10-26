@@ -54,6 +54,22 @@ export class PurchaseStore {
     this.saveCart(this.cart().filter((item) => item.product.id !== productId));
   }
 
+  restoreDemoCart(): boolean {
+    const demoCart = INITIAL_CART.map((item) => ({
+      ...item,
+      product: { ...item.product },
+    }));
+    if (!this.persist(CART_STORAGE_KEY, demoCart)) {
+      this.persistenceNotice.set(
+        'No fue posible cargar los productos de ejemplo en este navegador.',
+      );
+      return false;
+    }
+
+    this.cart.set(demoCart);
+    return true;
+  }
+
   createOrder(shippingDetails: PlaceOrderInput): OrderCreationResult {
     const items = this.cart().map((item) => ({
       ...item,

@@ -1,7 +1,7 @@
+import { vi } from 'vitest';
 import { CART_STORAGE_KEY, ORDERS_STORAGE_KEY } from './purchase.constants';
 import { PlaceOrderInput } from './purchase.models';
 import { PurchaseStore } from './purchase.store';
-import { vi } from 'vitest';
 
 const validShippingDetails: PlaceOrderInput = {
   fullName: 'Héctor',
@@ -68,6 +68,32 @@ describe('PurchaseStore cart', () => {
 
     expect(store.cart()).toEqual([]);
     expect(store.cartCount()).toBe(0);
+  });
+
+  it('restores the demonstration products after an empty cart', () => {
+    localStorage.setItem(CART_STORAGE_KEY, JSON.stringify([]));
+    const store = new PurchaseStore();
+
+    expect(store.restoreDemoCart()).toBe(true);
+    expect(store.cartCount()).toBe(4);
+    expect(JSON.parse(localStorage.getItem(CART_STORAGE_KEY) ?? '[]')).toHaveLength(3);
+  });
+
+  it('does not change an empty cart when restoring demo products cannot be persisted', () => {
+    localStorage.setItem(CART_STORAGE_KEY, JSON.stringify([]));
+    const store = new PurchaseStore();
+    const originalSetItem = Storage.prototype.setItem;
+    const setItem = vi.spyOn(Storage.prototype, 'setItem').mockImplementation((key, value) => {
+      if (key === CART_STORAGE_KEY) {
+        throw new DOMException('Storage is unavailable.', 'SecurityError');
+      }
+      originalSetItem.call(localStorage, key, value);
+    });
+
+    expect(store.restoreDemoCart()).toBe(false);
+    expect(store.cart()).toEqual([]);
+    expect(store.persistenceNotice()).toContain('No fue posible cargar los productos de ejemplo');
+    setItem.mockRestore();
   });
 
   it('creates and persists an order snapshot before clearing the cart', () => {
