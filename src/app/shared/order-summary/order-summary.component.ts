@@ -3,9 +3,10 @@ import { RouterLink } from '@angular/router';
 import { CartItem } from '../../purchase/purchase.models';
 import { formatCop } from '../../purchase/purchase.format';
 import { AppIcon } from '../icons/app-icon.component';
+import { ProductImage } from '../media/product-image.component';
 
 @Component({
-  imports: [AppIcon, RouterLink],
+  imports: [AppIcon, ProductImage, RouterLink],
   selector: 'app-order-summary',
   templateUrl: './order-summary.component.html',
   styleUrl: './order-summary.component.scss',
@@ -21,6 +22,8 @@ export class OrderSummary {
     this.items().reduce((total, item) => total + item.product.price * item.quantity, 0),
   );
   protected readonly total = computed(() => this.subtotal() + this.shipping());
-  protected readonly itemCount = computed(() => this.items().length);
+  protected readonly itemCount = computed(() =>
+    this.items().reduce((total, item) => total + item.quantity, 0),
+  );
   protected readonly formatCop = formatCop;
 }

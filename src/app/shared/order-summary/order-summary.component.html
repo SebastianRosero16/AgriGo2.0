@@ -5,7 +5,12 @@
     <div class="summary-items">
       @for (item of items(); track item.product.id) {
         <div class="summary-item">
-          <span class="summary-quantity">{{ item.quantity }} ×</span>
+          <div class="summary-image">
+            <app-product-image [product]="item.product" />
+            <span class="summary-quantity" [attr.aria-label]="item.quantity + ' unidades'">
+              {{ item.quantity }}
+            </span>
+          </div>
           <span class="summary-name">{{ item.product.name }}</span>
           <strong>{{ formatCop(item.product.price * item.quantity) }}</strong>
         </div>
