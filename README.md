@@ -28,7 +28,7 @@ La aplicación es un prototipo académico: no incluye pagos reales, base de dato
 
 ## Ejecución
 
-El proyecto Angular se encuentra en `book-angular-6b`. Para ejecutarlo:
+El proyecto Angular se encuentra en `book-angular-6b`. Requiere Node.js compatible con Angular 22 y npm:
 
 ```bash
 cd book-angular-6b
@@ -36,7 +36,21 @@ npm install
 npm start
 ```
 
-Luego, abre la dirección local que indique Angular CLI en la terminal.
+Abre la dirección local que indique Angular CLI en la terminal. Para ejecutar las pruebas y generar una compilación:
+
+```bash
+npm test
+npm run build
+```
+
+## Flujo de compra implementado
+
+- El carrito permite aumentar o disminuir cantidades, quitar productos y consultar el subtotal.
+- El checkout valida los datos de entrega y ofrece métodos de pago simulados; no solicita ni procesa datos bancarios.
+- Al confirmar, se crea una orden de demostración, se vacía el carrito y se muestra la confirmación.
+- El historial permite consultar las órdenes creadas en el navegador.
+
+El catálogo inicial, los precios y el inventario son datos de ejemplo. El carrito y las órdenes se guardan en `localStorage`; cualquier persona con acceso al navegador puede modificar esos datos desde las herramientas de desarrollo. Esta aplicación no ofrece autenticación, autorización, pagos reales ni seguridad de inventario. Esas garantías requieren validación y persistencia en un backend confiable.
 
 ## Estado
 

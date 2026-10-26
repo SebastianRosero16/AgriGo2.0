@@ -1,0 +1,105 @@
+<section aria-labelledby="cart-title">
+  <div class="page-heading">
+    <div>
+      <p class="eyebrow">Tu compra local</p>
+      <h1 id="cart-title">Mi carrito</h1>
+      <p class="page-description">
+        @if (itemCount() === 1) {
+          1 unidad lista para continuar.
+        } @else {
+          {{ itemCount() }} unidades listas para continuar.
+        }
+      </p>
+    </div>
+    <a class="text-link" routerLink="/orders">Consultar mis pedidos</a>
+  </div>
+
+  @if (cart().length > 0) {
+    <div class="cart-layout">
+      <div class="cart-list">
+        <article class="producer-card">
+          <div class="producer-mark" aria-hidden="true">CR</div>
+          <div class="producer-details">
+            <h2>Carlos Rodríguez</h2>
+            <p>Productor local · Facatativá, Cundinamarca</p>
+          </div>
+          <span class="producer-status">Entrega local</span>
+        </article>
+
+        @for (item of cart(); track item.product.id) {
+          <article class="cart-item">
+            <div class="product-image" [class]="item.product.color" aria-hidden="true">
+              <span>{{ item.product.name.charAt(0) }}</span>
+            </div>
+            <div class="item-information">
+              <p class="item-category">{{ item.product.category }}</p>
+              <h3>{{ item.product.name }}</h3>
+              <p class="item-producer">{{ item.product.producer }} · {{ item.product.location }}</p>
+              <p class="item-unit">{{ formatCop(item.product.price) }} / {{ item.product.unit }}</p>
+              <div class="item-actions">
+                <div
+                  class="quantity-control"
+                  [attr.aria-label]="'Cantidad de ' + item.product.name"
+                >
+                  <button
+                    type="button"
+                    [attr.aria-label]="'Disminuir cantidad de ' + item.product.name"
+                    [disabled]="item.quantity <= 1"
+                    (click)="changeQuantity(item, -1)"
+                  >
+                    −
+                  </button>
+                  <span aria-live="polite">{{ item.quantity }}</span>
+                  <button
+                    type="button"
+                    [attr.aria-label]="'Aumentar cantidad de ' + item.product.name"
+                    [disabled]="item.quantity >= item.product.available"
+                    (click)="changeQuantity(item, 1)"
+                  >
+                    +
+                  </button>
+                </div>
+                <button class="remove-button" type="button" (click)="removeItem(item)">
+                  Quitar
+                </button>
+              </div>
+            </div>
+            <p class="item-total">{{ formatCop(item.product.price * item.quantity) }}</p>
+          </article>
+        }
+      </div>
+
+      <aside class="summary-card" aria-labelledby="summary-title">
+        <h2 id="summary-title">Resumen del pedido</h2>
+        <div class="summary-row">
+          <span>Productos ({{ cart().length }})</span>
+          <span>{{ formatCop(subtotal()) }}</span>
+        </div>
+        <div class="summary-row">
+          <span>Envío</span>
+          <span class="free-shipping">{{
+            shippingCost === 0 ? 'Gratis' : formatCop(shippingCost)
+          }}</span>
+        </div>
+        <div class="summary-total">
+          <span>Total</span>
+          <strong>{{ formatCop(total()) }}</strong>
+        </div>
+        <p class="summary-note">
+          El pedido es una simulación académica; no se realizará ningún cobro.
+        </p>
+        <a class="button button-primary checkout-button" routerLink="/checkout">
+          Continuar con la entrega
+          <span aria-hidden="true">→</span>
+        </a>
+      </aside>
+    </div>
+  } @else {
+    <div class="empty-state">
+      <div class="empty-icon" aria-hidden="true">0</div>
+      <h2>Tu carrito está vacío</h2>
+      <p>Cuando agregues productos, aparecerán aquí para que puedas revisar tu pedido.</p>
+      <a class="button button-primary" routerLink="/orders">Ver mis pedidos</a>
+    </div>
+  }
+</section>

@@ -1,0 +1,71 @@
+<section aria-labelledby="orders-title">
+  <div class="page-heading">
+    <div>
+      <p class="eyebrow">Tus compras</p>
+      <h1 id="orders-title">Mis pedidos</h1>
+      <p class="page-description">Consulta las órdenes que has creado en este navegador.</p>
+    </div>
+    <label class="search-field">
+      <span class="visually-hidden">Buscar por número de orden o producto</span>
+      <input
+        type="search"
+        placeholder="Buscar pedido…"
+        [value]="searchTerm()"
+        (input)="updateSearch($event)"
+      />
+    </label>
+  </div>
+
+  @if (orders().length === 0) {
+    <div class="empty-state">
+      <div class="empty-icon" aria-hidden="true">—</div>
+      <h2>Aún no tienes pedidos</h2>
+      <p>Cuando confirmes un pedido, aparecerá aquí con su detalle y estado.</p>
+      <a class="button button-primary" routerLink="/cart">Revisar mi carrito</a>
+    </div>
+  } @else if (filteredOrders().length === 0) {
+    <div class="no-results" role="status">
+      <h2>No encontramos coincidencias</h2>
+      <p>Prueba con otro número de orden o nombre de producto.</p>
+    </div>
+  } @else {
+    <div class="orders-list">
+      @for (order of filteredOrders(); track order.id) {
+        <article class="order-card">
+          <div class="order-header">
+            <div>
+              <p class="order-date">{{ formatOrderDate(order.createdAt) }}</p>
+              <h2>Orden {{ order.id }}</h2>
+            </div>
+            <span class="status-badge">Confirmado</span>
+          </div>
+
+          <div class="order-details">
+            <div>
+              <span class="detail-label">Productos</span>
+              <strong>{{ order.items.length }}</strong>
+            </div>
+            <div>
+              <span class="detail-label">Entrega a</span>
+              <strong
+                >{{ order.shippingDetails.city }}, {{ order.shippingDetails.department }}</strong
+              >
+            </div>
+            <div class="order-total">
+              <span class="detail-label">Total</span>
+              <strong>{{ formatCop(order.total) }}</strong>
+            </div>
+          </div>
+
+          <div class="order-footer">
+            <p>{{ productNames(order) }}</p>
+            <a class="button button-secondary" [routerLink]="['/orders', order.id]">
+              Ver detalle
+              <span aria-hidden="true">→</span>
+            </a>
+          </div>
+        </article>
+      }
+    </div>
+  }
+</section>

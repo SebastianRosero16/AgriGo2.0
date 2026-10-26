@@ -1,0 +1,235 @@
+<section aria-labelledby="checkout-title">
+  <div class="page-heading">
+    <div>
+      <p class="eyebrow">Último paso</p>
+      <h1 id="checkout-title">Finalizar pedido</h1>
+      <p class="page-description">Indica dónde y cuándo quieres recibir tus productos.</p>
+    </div>
+    <a class="text-link" routerLink="/cart">← Volver al carrito</a>
+  </div>
+
+  @if (cart().length === 0) {
+    <div class="empty-checkout">
+      <h2>No hay productos para confirmar</h2>
+      <p>Agrega al menos un producto antes de completar el pedido.</p>
+      <a class="button button-primary" routerLink="/cart">Ir al carrito</a>
+    </div>
+  } @else {
+    <div class="checkout-layout">
+      <form class="checkout-form" [formGroup]="checkoutForm" (ngSubmit)="submitOrder()" novalidate>
+        <section class="form-card" aria-labelledby="delivery-title">
+          <div class="section-heading">
+            <span class="step-number">1</span>
+            <div>
+              <h2 id="delivery-title">Datos de entrega</h2>
+              <p>Los campos con * son obligatorios.</p>
+            </div>
+          </div>
+
+          <div class="form-grid two-columns">
+            <div class="form-field">
+              <label for="fullName">Nombre completo *</label>
+              <input
+                id="fullName"
+                type="text"
+                autocomplete="name"
+                formControlName="fullName"
+                [attr.aria-invalid]="isInvalid('fullName')"
+                [attr.aria-describedby]="isInvalid('fullName') ? 'fullName-error' : null"
+              />
+              @if (isInvalid('fullName')) {
+                <p class="field-error" id="fullName-error">
+                  @if (checkoutForm.controls.fullName.hasError('required')) {
+                    Ingresa el nombre de quien recibe el pedido.
+                  } @else if (checkoutForm.controls.fullName.hasError('minlength')) {
+                    El nombre debe tener al menos 3 caracteres.
+                  } @else {
+                    El nombre no puede superar 80 caracteres.
+                  }
+                </p>
+              }
+            </div>
+
+            <div class="form-field">
+              <label for="phone">Teléfono *</label>
+              <input
+                id="phone"
+                type="tel"
+                autocomplete="tel"
+                inputmode="tel"
+                formControlName="phone"
+                placeholder="+57 300 123 4567"
+                [attr.aria-invalid]="isInvalid('phone')"
+                [attr.aria-describedby]="isInvalid('phone') ? 'phone-error' : null"
+              />
+              @if (isInvalid('phone')) {
+                <p class="field-error" id="phone-error">Ingresa un teléfono válido.</p>
+              }
+            </div>
+          </div>
+
+          <div class="form-field">
+            <label for="address">Dirección *</label>
+            <input
+              id="address"
+              type="text"
+              autocomplete="street-address"
+              formControlName="address"
+              placeholder="Calle, carrera, avenida…"
+              [attr.aria-invalid]="isInvalid('address')"
+              [attr.aria-describedby]="isInvalid('address') ? 'address-error' : null"
+            />
+            @if (isInvalid('address')) {
+              <p class="field-error" id="address-error">
+                Ingresa una dirección de al menos 5 caracteres.
+              </p>
+            }
+          </div>
+
+          <div class="form-grid three-columns">
+            <div class="form-field">
+              <label for="city">Ciudad *</label>
+              <input id="city" type="text" autocomplete="address-level2" formControlName="city" />
+              @if (isInvalid('city')) {
+                <p class="field-error">Ingresa una ciudad válida.</p>
+              }
+            </div>
+            <div class="form-field">
+              <label for="department">Departamento *</label>
+              <input
+                id="department"
+                type="text"
+                autocomplete="address-level1"
+                formControlName="department"
+              />
+              @if (isInvalid('department')) {
+                <p class="field-error">Ingresa un departamento válido.</p>
+              }
+            </div>
+            <div class="form-field">
+              <label for="postalCode">Código postal</label>
+              <input
+                id="postalCode"
+                type="text"
+                autocomplete="postal-code"
+                inputmode="numeric"
+                formControlName="postalCode"
+              />
+              @if (isInvalid('postalCode')) {
+                <p class="field-error">Usa entre 5 y 10 dígitos.</p>
+              }
+            </div>
+          </div>
+
+          <div class="form-field">
+            <label for="instructions">Instrucciones para la entrega</label>
+            <textarea
+              id="instructions"
+              rows="3"
+              formControlName="instructions"
+              placeholder="Indicaciones útiles para recibir tu pedido"
+            ></textarea>
+            @if (isInvalid('instructions')) {
+              <p class="field-error">Las instrucciones no pueden superar 250 caracteres.</p>
+            }
+          </div>
+        </section>
+
+        <section class="form-card" aria-labelledby="schedule-title">
+          <div class="section-heading">
+            <span class="step-number">2</span>
+            <div>
+              <h2 id="schedule-title">Fecha y horario</h2>
+              <p>Elige una fecha a partir de mañana.</p>
+            </div>
+          </div>
+          <div class="form-grid two-columns">
+            <div class="form-field">
+              <label for="deliveryDate">Fecha preferida *</label>
+              <input
+                id="deliveryDate"
+                type="date"
+                [min]="minDeliveryDate"
+                formControlName="deliveryDate"
+                [attr.aria-invalid]="isInvalid('deliveryDate')"
+              />
+              @if (isInvalid('deliveryDate')) {
+                <p class="field-error">Selecciona una fecha igual o posterior a mañana.</p>
+              }
+            </div>
+            <div class="form-field">
+              <label for="deliveryWindow">Horario preferido *</label>
+              <select id="deliveryWindow" formControlName="deliveryWindow">
+                @for (window of deliveryWindows; track window.value) {
+                  <option [value]="window.value">{{ window.label }}</option>
+                }
+              </select>
+            </div>
+          </div>
+        </section>
+
+        <section class="form-card" aria-labelledby="payment-title">
+          <div class="section-heading">
+            <span class="step-number">3</span>
+            <div>
+              <h2 id="payment-title">Método de pago simulado</h2>
+              <p>No se procesarán pagos ni se pedirán datos bancarios.</p>
+            </div>
+          </div>
+          <div class="payment-options">
+            @for (method of paymentMethods; track method.value) {
+              <label class="payment-option">
+                <input type="radio" formControlName="paymentMethod" [value]="method.value" />
+                <span class="radio-mark" aria-hidden="true"></span>
+                <span>
+                  <strong>{{ method.label }}</strong>
+                  <small>
+                    @if (method.value === 'cash') {
+                      Paga en efectivo cuando recibas el pedido.
+                    } @else {
+                      El registro de la transferencia es solo demostrativo.
+                    }
+                  </small>
+                </span>
+              </label>
+            }
+          </div>
+        </section>
+
+        @if (submitError) {
+          <p class="submit-error" role="alert">{{ submitError }}</p>
+        }
+        <button class="button button-primary submit-button" type="submit">
+          Confirmar pedido · {{ formatCop(total()) }}
+          <span aria-hidden="true">→</span>
+        </button>
+      </form>
+
+      <aside class="summary-card" aria-labelledby="summary-title">
+        <h2 id="summary-title">Resumen del pedido</h2>
+        @for (item of cart(); track item.product.id) {
+          <div class="summary-item">
+            <span class="summary-quantity">{{ item.quantity }} ×</span>
+            <span class="summary-name">{{ item.product.name }}</span>
+            <strong>{{ formatCop(item.product.price * item.quantity) }}</strong>
+          </div>
+        }
+        <div class="summary-row">
+          <span>Subtotal</span>
+          <span>{{ formatCop(subtotal()) }}</span>
+        </div>
+        <div class="summary-row">
+          <span>Envío</span>
+          <span class="free-shipping">{{
+            shippingCost === 0 ? 'Gratis' : formatCop(shippingCost)
+          }}</span>
+        </div>
+        <div class="summary-total">
+          <span>Total de la orden</span>
+          <strong>{{ formatCop(total()) }}</strong>
+        </div>
+        <p class="summary-note">Orden de demostración. No se realizará un cobro.</p>
+      </aside>
+    </div>
+  }
+</section>
