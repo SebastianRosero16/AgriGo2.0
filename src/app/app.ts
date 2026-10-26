@@ -1,5 +1,6 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { PurchaseStore } from './purchase/purchase.store';
 import { AppIcon } from './shared/icons/app-icon.component';
 
 @Component({
@@ -9,5 +10,8 @@ import { AppIcon } from './shared/icons/app-icon.component';
   templateUrl: './app.html',
 })
 export class App {
-  protected readonly cartCount = signal(0);
+  private readonly purchaseStore = inject(PurchaseStore);
+
+  protected readonly cartCount = this.purchaseStore.cartCount;
+  protected readonly persistenceNotice = this.purchaseStore.persistenceNotice;
 }

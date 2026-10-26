@@ -11,7 +11,6 @@ export interface Product {
   readonly available: number;
   readonly producer: string;
   readonly location: string;
-  readonly color: string;
   readonly imageSrc: string;
   readonly imageAlt: string;
 }

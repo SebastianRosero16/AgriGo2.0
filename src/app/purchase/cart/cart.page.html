@@ -1,0 +1,53 @@
+<section aria-labelledby="cart-title">
+  <div class="page-heading">
+    <div>
+      <p class="eyebrow">Tu compra local</p>
+      <h1 id="cart-title">Mi carrito</h1>
+      <p class="page-description">
+        @if (itemCount() === 1) {
+          1 unidad lista para continuar.
+        } @else {
+          {{ itemCount() }} unidades listas para continuar.
+        }
+      </p>
+    </div>
+    <a class="text-link" routerLink="/orders">Consultar mis pedidos</a>
+  </div>
+
+  @if (cart().length > 0) {
+    <div class="cart-layout">
+      <div class="cart-list">
+        <article class="producer-card">
+          <div class="producer-mark"><app-icon name="leaf" /></div>
+          <div class="producer-details">
+            <h2>Carlos Rodríguez</h2>
+            <p><app-icon name="mapPin" /> Productor local · Facatativá, Cundinamarca</p>
+          </div>
+          <span class="producer-status"><app-icon name="truck" /> Entrega local</span>
+        </article>
+
+        @for (item of cart(); track item.product.id; let first = $first) {
+          <app-cart-item-card
+            [item]="item"
+            [priority]="first"
+            (quantityChange)="changeQuantity(item, $event)"
+            (remove)="removeItem(item)"
+          />
+        }
+      </div>
+
+      <app-order-summary
+        [items]="cart()"
+        [showCheckoutAction]="true"
+        note="El pedido es una simulación académica; no se realizará ningún cobro."
+      />
+    </div>
+  } @else {
+    <div class="empty-state">
+      <div class="empty-icon"><app-icon name="cart" /></div>
+      <h2>Tu carrito está vacío</h2>
+      <p>Cuando agregues productos, aparecerán aquí para que puedas revisar tu pedido.</p>
+      <a class="button button-primary" routerLink="/orders">Ver mis pedidos</a>
+    </div>
+  }
+</section>

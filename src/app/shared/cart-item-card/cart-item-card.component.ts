@@ -12,6 +12,7 @@ import { ProductImage } from '../media/product-image.component';
 })
 export class CartItemCard {
   readonly item = input.required<CartItem>();
+  readonly priority = input(false);
   readonly quantityChange = output<-1 | 1>();
   readonly remove = output<void>();
 

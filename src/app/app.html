@@ -19,6 +19,10 @@
     <span class="buyer-label"><app-icon name="user" /> Comprador</span>
   </header>
 
+  @if (persistenceNotice()) {
+    <p class="storage-notice" role="status">{{ persistenceNotice() }}</p>
+  }
+
   <main class="main-content">
     <router-outlet />
   </main>
