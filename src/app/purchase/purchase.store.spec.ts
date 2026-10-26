@@ -99,4 +99,19 @@ describe('PurchaseStore cart', () => {
     expect(store.persistenceNotice()).toContain('historial guardado no era válido');
     expect(JSON.parse(localStorage.getItem(ORDERS_STORAGE_KEY) ?? 'null')).toEqual([]);
   });
+
+  it('rejects saved delivery dates that are not real calendar dates', () => {
+    const store = new PurchaseStore();
+    const order = store.createOrder(validShippingDetails);
+    if (order === null) {
+      throw new Error('Expected order creation to succeed.');
+    }
+    const invalidOrder = {
+      ...order,
+      shippingDetails: { ...order.shippingDetails, deliveryDate: '2026-02-31' },
+    };
+    localStorage.setItem(ORDERS_STORAGE_KEY, JSON.stringify([invalidOrder]));
+
+    expect(new PurchaseStore().orders()).toEqual([]);
+  });
 });

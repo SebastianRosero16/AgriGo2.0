@@ -210,6 +210,12 @@ export class PurchaseStore {
       return false;
     }
     const details = value as Partial<ShippingDetails>;
+    const deliveryDate = details.deliveryDate;
+    const hasValidDeliveryDate =
+      typeof deliveryDate === 'string' &&
+      /^\d{4}-\d{2}-\d{2}$/.test(deliveryDate) &&
+      Number.isFinite(Date.parse(deliveryDate)) &&
+      new Date(deliveryDate).toISOString().slice(0, 10) === deliveryDate;
     return (
       typeof details.fullName === 'string' &&
       typeof details.phone === 'string' &&
@@ -217,7 +223,7 @@ export class PurchaseStore {
       typeof details.city === 'string' &&
       typeof details.department === 'string' &&
       typeof details.postalCode === 'string' &&
-      typeof details.deliveryDate === 'string' &&
+      hasValidDeliveryDate &&
       (details.deliveryWindow === 'morning' ||
         details.deliveryWindow === 'afternoon' ||
         details.deliveryWindow === 'evening') &&

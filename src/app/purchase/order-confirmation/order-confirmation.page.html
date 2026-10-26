@@ -1,0 +1,81 @@
+<section aria-labelledby="confirmation-title">
+  @if (order(); as confirmedOrder) {
+    <div class="confirmation-card">
+      <div class="success-mark" aria-hidden="true"><app-icon name="check" /></div>
+      <p class="eyebrow">Pedido registrado</p>
+      <h1 id="confirmation-title">¡Gracias por tu pedido!</h1>
+      <p class="confirmation-copy">
+        La orden quedó guardada en este navegador como una simulación académica.
+      </p>
+
+      <div class="order-reference">
+        <span>Número de orden</span>
+        <strong>{{ confirmedOrder.id }}</strong>
+        <small>{{ formatOrderDate(confirmedOrder.createdAt) }}</small>
+      </div>
+
+      <div class="confirmation-grid">
+        <section class="detail-card" aria-labelledby="items-title">
+          <h2 id="items-title">Productos del pedido</h2>
+          @for (item of confirmedOrder.items; track item.product.id) {
+            <div class="detail-row">
+              <span>{{ item.quantity }} × {{ item.product.name }}</span>
+              <strong>{{ formatCop(item.quantity * item.product.price) }}</strong>
+            </div>
+          }
+          <div class="detail-row">
+            <span>Envío</span>
+            <strong>{{
+              confirmedOrder.shipping === 0 ? 'Gratis' : formatCop(confirmedOrder.shipping)
+            }}</strong>
+          </div>
+          <div class="detail-row total-row">
+            <span>Total</span>
+            <strong>{{ formatCop(confirmedOrder.total) }}</strong>
+          </div>
+        </section>
+
+        <section class="detail-card" aria-labelledby="delivery-title">
+          <h2 id="delivery-title">Dirección de entrega</h2>
+          <p class="detail-name">{{ confirmedOrder.shippingDetails.fullName }}</p>
+          <p>{{ confirmedOrder.shippingDetails.address }}</p>
+          <p>
+            {{ confirmedOrder.shippingDetails.city }},
+            {{ confirmedOrder.shippingDetails.department }}
+            @if (confirmedOrder.shippingDetails.postalCode) {
+              · {{ confirmedOrder.shippingDetails.postalCode }}
+            }
+          </p>
+          <p>{{ confirmedOrder.shippingDetails.phone }}</p>
+          <div class="delivery-note">
+            <span>Fecha preferida</span>
+            <strong>{{ formatDeliveryDate(confirmedOrder.shippingDetails.deliveryDate) }}</strong>
+            <span>{{ deliveryWindowLabel(confirmedOrder.shippingDetails.deliveryWindow) }}</span>
+          </div>
+          <div class="delivery-note">
+            <span>Método de pago simulado</span>
+            <strong>{{ paymentMethodLabel(confirmedOrder.shippingDetails.paymentMethod) }}</strong>
+          </div>
+          @if (confirmedOrder.shippingDetails.instructions) {
+            <div class="delivery-note">
+              <span>Instrucciones</span>
+              <strong>{{ confirmedOrder.shippingDetails.instructions }}</strong>
+            </div>
+          }
+        </section>
+      </div>
+
+      <div class="confirmation-actions">
+        <a class="button button-secondary" routerLink="/orders">Ver mis pedidos</a>
+        <a class="button button-primary" routerLink="/cart">Volver al carrito</a>
+      </div>
+    </div>
+  } @else {
+    <div class="not-found-card">
+      <p class="eyebrow">Pedido no disponible</p>
+      <h1 id="confirmation-title">No encontramos esta orden</h1>
+      <p>El historial se guarda en el navegador donde se creó el pedido.</p>
+      <a class="button button-primary" routerLink="/orders">Ir a mis pedidos</a>
+    </div>
+  }
+</section>
