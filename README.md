@@ -55,10 +55,10 @@ npm audit
 
 ## Flujo de compra implementado
 
-- El carrito permite aumentar o disminuir cantidades, quitar productos y consultar el subtotal.
+- El carrito agrupa productos por productor, permite ajustar cantidades y restaurar el catálogo de demostración si queda vacío.
 - El checkout valida los datos de entrega y ofrece métodos de pago simulados; no solicita ni procesa datos bancarios.
 - Al confirmar, se crea una orden de demostración, se vacía el carrito y se muestra la confirmación.
-- El historial permite consultar las órdenes creadas en el navegador.
+- El historial muestra productos y datos de entrega de las órdenes creadas en el navegador, y permite buscarlas por número o producto.
 
 Los productos, precios, inventario y productor del carrito son datos de ejemplo. El carrito y las órdenes se guardan en `localStorage`; cualquier persona con acceso al navegador puede modificar esos datos desde las herramientas de desarrollo. Esta aplicación no ofrece autenticación, autorización, pagos reales ni seguridad de inventario. Esas garantías requieren validación y persistencia en un backend confiable.
 
