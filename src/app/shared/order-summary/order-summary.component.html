@@ -1,0 +1,45 @@
+<aside class="summary-card" aria-labelledby="summary-title">
+  <h2 id="summary-title">Resumen del pedido</h2>
+
+  @if (showItems()) {
+    <div class="summary-items">
+      @for (item of items(); track item.product.id) {
+        <div class="summary-item">
+          <span class="summary-quantity">{{ item.quantity }} ×</span>
+          <span class="summary-name">{{ item.product.name }}</span>
+          <strong>{{ formatCop(item.product.price * item.quantity) }}</strong>
+        </div>
+      }
+    </div>
+  }
+
+  <div class="summary-row">
+    <span>Productos ({{ itemCount() }})</span>
+    <span>{{ formatCop(subtotal()) }}</span>
+  </div>
+  <div class="summary-row">
+    <span>Envío</span>
+    <span class="shipping-value">
+      @if (shipping() === 0) {
+        Gratis
+      } @else {
+        {{ formatCop(shipping()) }}
+      }
+    </span>
+  </div>
+  <div class="summary-total">
+    <span>Total</span>
+    <strong>{{ formatCop(total()) }}</strong>
+  </div>
+
+  @if (note()) {
+    <p class="summary-note">{{ note() }}</p>
+  }
+
+  @if (showCheckoutAction()) {
+    <a class="checkout-button" routerLink="/checkout">
+      Continuar con la entrega
+      <app-icon name="arrowRight" />
+    </a>
+  }
+</aside>

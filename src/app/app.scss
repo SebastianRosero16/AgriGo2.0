@@ -84,9 +84,16 @@
 }
 
 .buyer-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
   color: var(--gray-600);
   font-size: 0.85rem;
   font-weight: 600;
+}
+
+.buyer-label app-icon {
+  color: var(--green-700);
 }
 
 .storage-notice {

@@ -52,6 +52,12 @@ npm audit
 
 El catálogo inicial, los precios y el inventario son datos de ejemplo. El carrito y las órdenes se guardan en `localStorage`; cualquier persona con acceso al navegador puede modificar esos datos desde las herramientas de desarrollo. Esta aplicación no ofrece autenticación, autorización, pagos reales ni seguridad de inventario. Esas garantías requieren validación y persistencia en un backend confiable.
 
+## Organización del frontend
+
+- `src/app/shared/` contiene componentes visuales reutilizables, iconografía SVG propia e imágenes locales optimizadas.
+- `src/app/purchase/` agrupa las pantallas y el estado del flujo de compra.
+- Los modelos definen los datos; las constantes y los datos de ejemplo se mantienen separados de las vistas.
+
 ## Estado
 
 Proyecto final de Electiva III en desarrollo.

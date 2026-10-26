@@ -1,20 +1,22 @@
 <div class="app-shell">
   <header class="site-header">
     <a class="brand" routerLink="/cart" aria-label="AgriGo, ir al carrito">
-      <span class="brand-mark" aria-hidden="true">A</span>
+      <span class="brand-mark"><app-icon name="leaf" /></span>
       <span class="brand-name">Agri<span>Go</span></span>
     </a>
 
     <nav class="main-nav" aria-label="Navegación principal">
       <a routerLink="/cart" routerLinkActive="active" ariaCurrentWhenActive="page">
+        <app-icon class="nav-icon" name="cart" />
         Carrito <span class="nav-count">{{ cartCount() }}</span>
       </a>
       <a routerLink="/orders" routerLinkActive="active" ariaCurrentWhenActive="page">
+        <app-icon class="nav-icon" name="receipt" />
         Mis pedidos
       </a>
     </nav>
 
-    <span class="buyer-label">Comprador</span>
+    <span class="buyer-label"><app-icon name="user" /> Comprador</span>
   </header>
 
   <main class="main-content">
