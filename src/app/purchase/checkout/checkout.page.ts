@@ -89,13 +89,23 @@ export class CheckoutPage {
       return;
     }
 
-    const order = this.purchaseStore.createOrder(this.checkoutForm.getRawValue());
-    if (order === null) {
+    const result = this.purchaseStore.createOrder(this.checkoutForm.getRawValue());
+    if (!result.success) {
+      if (result.reason === 'rollback') {
+        this.submitError =
+          'No se pudo completar la compra de forma segura. Revisa “Mis pedidos” antes de volver a intentarlo para evitar duplicar la orden.';
+        return;
+      }
+      if (result.reason === 'persistence') {
+        this.submitError =
+          'No fue posible guardar el pedido en este navegador. El carrito se conserva; revisa el espacio disponible e inténtalo de nuevo.';
+        return;
+      }
       this.submitError = 'El carrito está vacío. Agrega productos antes de confirmar el pedido.';
       return;
     }
 
-    void this.router.navigate(['/orders', order.id]);
+    void this.router.navigate(['/orders', result.order.id]);
   }
 
   protected isInvalid(controlName: keyof typeof this.checkoutForm.controls): boolean {

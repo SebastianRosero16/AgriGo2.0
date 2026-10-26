@@ -1,6 +1,7 @@
 import { CART_STORAGE_KEY, ORDERS_STORAGE_KEY } from './purchase.constants';
 import { PlaceOrderInput } from './purchase.models';
 import { PurchaseStore } from './purchase.store';
+import { vi } from 'vitest';
 
 const validShippingDetails: PlaceOrderInput = {
   fullName: 'Héctor',
@@ -73,22 +74,90 @@ describe('PurchaseStore cart', () => {
     const store = new PurchaseStore();
     const order = store.createOrder(validShippingDetails);
 
-    expect(order).not.toBeNull();
-    expect(order?.items).toHaveLength(3);
-    expect(order?.total).toBe(64_200);
-    expect(store.findOrder(order?.id ?? '')).toEqual(order);
+    expect(order.success).toBe(true);
+    if (!order.success) {
+      throw new Error('Expected order creation to succeed.');
+    }
+    expect(order.order.items).toHaveLength(3);
+    expect(order.order.total).toBe(64_200);
+    expect(store.findOrder(order.order.id)).toEqual(order.order);
     expect(store.cart()).toEqual([]);
-    expect(JSON.parse(localStorage.getItem(ORDERS_STORAGE_KEY) ?? '[]')).toEqual([order]);
+    expect(JSON.parse(localStorage.getItem(ORDERS_STORAGE_KEY) ?? '[]')).toEqual([order.order]);
     expect(JSON.parse(localStorage.getItem(CART_STORAGE_KEY) ?? 'null')).toEqual([]);
-    expect(new PurchaseStore().findOrder(order?.id ?? '')).toEqual(order);
+    expect(new PurchaseStore().findOrder(order.order.id)).toEqual(order.order);
   });
 
   it('does not create an order when the cart is empty', () => {
     localStorage.setItem(CART_STORAGE_KEY, JSON.stringify([]));
     const store = new PurchaseStore();
 
-    expect(store.createOrder(validShippingDetails)).toBeNull();
+    expect(store.createOrder(validShippingDetails)).toEqual({
+      success: false,
+      reason: 'empty-cart',
+    });
     expect(store.orders()).toEqual([]);
+  });
+
+  it('keeps the cart when the order cannot be persisted', () => {
+    const store = new PurchaseStore();
+    const originalCart = store.cart();
+    const originalSetItem = Storage.prototype.setItem;
+    const setItem = vi.spyOn(Storage.prototype, 'setItem').mockImplementation((key, value) => {
+      if (key === ORDERS_STORAGE_KEY) {
+        throw new DOMException('Storage is full.', 'QuotaExceededError');
+      }
+      originalSetItem.call(localStorage, key, value);
+    });
+
+    const result = store.createOrder(validShippingDetails);
+
+    expect(result).toEqual({ success: false, reason: 'persistence' });
+    expect(store.cart()).toEqual(originalCart);
+    expect(store.orders()).toEqual([]);
+    setItem.mockRestore();
+  });
+
+  it('rolls back the order when clearing the cart cannot be persisted', () => {
+    const store = new PurchaseStore();
+    const originalCart = store.cart();
+    const originalSetItem = Storage.prototype.setItem;
+    const setItem = vi.spyOn(Storage.prototype, 'setItem').mockImplementation((key, value) => {
+      if (key === CART_STORAGE_KEY && value === '[]') {
+        throw new DOMException('Storage is unavailable.', 'SecurityError');
+      }
+      originalSetItem.call(localStorage, key, value);
+    });
+
+    const result = store.createOrder(validShippingDetails);
+
+    expect(result).toEqual({ success: false, reason: 'persistence' });
+    expect(store.cart()).toEqual(originalCart);
+    expect(store.orders()).toEqual([]);
+    expect(JSON.parse(localStorage.getItem(ORDERS_STORAGE_KEY) ?? 'null')).toEqual([]);
+    setItem.mockRestore();
+  });
+
+  it('warns to review the order history if rollback also fails', () => {
+    const store = new PurchaseStore();
+    const originalSetItem = Storage.prototype.setItem;
+    const setItem = vi.spyOn(Storage.prototype, 'setItem').mockImplementation((key, value) => {
+      if (
+        (key === CART_STORAGE_KEY && value === '[]') ||
+        (key === ORDERS_STORAGE_KEY && value === '[]')
+      ) {
+        throw new DOMException('Storage is unavailable.', 'SecurityError');
+      }
+      originalSetItem.call(localStorage, key, value);
+    });
+
+    const result = store.createOrder(validShippingDetails);
+
+    expect(result).toEqual({ success: false, reason: 'rollback' });
+    expect(store.cart()).not.toHaveLength(0);
+    expect(store.orders()).toEqual([]);
+    expect(store.persistenceNotice()).toContain('Revisa tus pedidos antes de volver a intentarlo');
+    expect(JSON.parse(localStorage.getItem(ORDERS_STORAGE_KEY) ?? '[]')).toHaveLength(1);
+    setItem.mockRestore();
   });
 
   it('recovers from malformed saved orders without throwing', () => {
@@ -102,13 +171,13 @@ describe('PurchaseStore cart', () => {
 
   it('rejects saved delivery dates that are not real calendar dates', () => {
     const store = new PurchaseStore();
-    const order = store.createOrder(validShippingDetails);
-    if (order === null) {
+    const result = store.createOrder(validShippingDetails);
+    if (!result.success) {
       throw new Error('Expected order creation to succeed.');
     }
     const invalidOrder = {
-      ...order,
-      shippingDetails: { ...order.shippingDetails, deliveryDate: '2026-02-31' },
+      ...result.order,
+      shippingDetails: { ...result.order.shippingDetails, deliveryDate: '2026-02-31' },
     };
     localStorage.setItem(ORDERS_STORAGE_KEY, JSON.stringify([invalidOrder]));
 

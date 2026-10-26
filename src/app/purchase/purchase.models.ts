@@ -45,3 +45,10 @@ export interface PurchaseOrder {
 }
 
 export type PlaceOrderInput = ShippingDetails;
+
+export type OrderCreationResult =
+  | { readonly success: true; readonly order: PurchaseOrder }
+  | {
+      readonly success: false;
+      readonly reason: 'empty-cart' | 'persistence' | 'rollback';
+    };

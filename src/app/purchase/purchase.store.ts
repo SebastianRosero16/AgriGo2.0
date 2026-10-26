@@ -8,6 +8,7 @@ import {
 import { INITIAL_CART } from './purchase.data';
 import {
   CartItem,
+  OrderCreationResult,
   PlaceOrderInput,
   Product,
   PurchaseOrder,
@@ -53,13 +54,13 @@ export class PurchaseStore {
     this.saveCart(this.cart().filter((item) => item.product.id !== productId));
   }
 
-  createOrder(shippingDetails: PlaceOrderInput): PurchaseOrder | null {
+  createOrder(shippingDetails: PlaceOrderInput): OrderCreationResult {
     const items = this.cart().map((item) => ({
       ...item,
       product: { ...item.product },
     }));
     if (items.length === 0) {
-      return null;
+      return { success: false, reason: 'empty-cart' };
     }
 
     const subtotal = items.reduce((total, item) => total + item.product.price * item.quantity, 0);
@@ -75,10 +76,23 @@ export class PurchaseStore {
     };
     const nextOrders = [order, ...this.orders()];
 
+    if (!this.persist(ORDERS_STORAGE_KEY, nextOrders)) {
+      return { success: false, reason: 'persistence' };
+    }
+    if (!this.persist(CART_STORAGE_KEY, [])) {
+      const rollbackSucceeded = this.persist(ORDERS_STORAGE_KEY, this.orders());
+      if (!rollbackSucceeded) {
+        this.persistenceNotice.set(
+          'No se pudo completar la compra ni revertir el historial. Revisa tus pedidos antes de volver a intentarlo.',
+        );
+        return { success: false, reason: 'rollback' };
+      }
+      return { success: false, reason: 'persistence' };
+    }
+
     this.orders.set(nextOrders);
-    this.persist(ORDERS_STORAGE_KEY, nextOrders);
-    this.saveCart([]);
-    return order;
+    this.cart.set([]);
+    return { success: true, order };
   }
 
   findOrder(orderId: string): PurchaseOrder | null {
@@ -136,14 +150,16 @@ export class PurchaseStore {
     this.persist(CART_STORAGE_KEY, cart);
   }
 
-  private persist(key: string, value: unknown): void {
+  private persist(key: string, value: unknown): boolean {
     try {
       localStorage.setItem(key, JSON.stringify(value));
+      return true;
     } catch (error) {
       this.persistenceNotice.set(
         'Los cambios se conservarán solo mientras esta pestaña permanezca abierta.',
       );
       console.error(`No se pudieron guardar los datos de ${key}.`, error);
+      return false;
     }
   }
 
