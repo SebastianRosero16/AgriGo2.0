@@ -1,12 +1,14 @@
 import { Component, computed, inject, signal } from '@angular/core';
-import { RouterLink } from '@angular/router';
-import { formatCop, formatOrderDate } from '../purchase.format';
-import { PurchaseOrder } from '../purchase.models';
+import { DELIVERY_WINDOWS } from '../purchase.constants';
+import { formatCop, formatDeliveryDate, formatOrderDate } from '../purchase.format';
+import { DeliveryWindow, PurchaseOrder } from '../purchase.models';
 import { PurchaseStore } from '../purchase.store';
 import { AppIcon } from '../../shared/icons/app-icon.component';
+import { ProductImage } from '../../shared/media/product-image.component';
+import { RouterLink } from '@angular/router';
 
 @Component({
-  imports: [AppIcon, RouterLink],
+  imports: [AppIcon, ProductImage, RouterLink],
   selector: 'app-orders-page',
   styleUrl: './orders.page.scss',
   templateUrl: './orders.page.html',
@@ -17,7 +19,10 @@ export class OrdersPage {
   protected readonly orders = this.purchaseStore.orders;
   protected readonly searchTerm = signal('');
   protected readonly formatCop = formatCop;
+  protected readonly formatDeliveryDate = formatDeliveryDate;
   protected readonly formatOrderDate = formatOrderDate;
+  protected readonly deliveryWindowLabel = (value: DeliveryWindow): string =>
+    DELIVERY_WINDOWS.find((window) => window.value === value)?.label ?? 'Horario por confirmar';
   protected readonly filteredOrders = computed(() => {
     const query = this.searchTerm().trim().toLocaleLowerCase('es-CO');
     if (!query) {
@@ -34,12 +39,12 @@ export class OrdersPage {
     }
   }
 
-  protected productNames(order: PurchaseOrder): string {
-    return order.items.map((item) => item.product.name).join(', ');
-  }
-
   protected productCount(order: PurchaseOrder): number {
     return order.items.reduce((total, item) => total + item.quantity, 0);
+  }
+
+  protected producerNames(order: PurchaseOrder): string {
+    return Array.from(new Set(order.items.map((item) => item.product.producer))).join(', ');
   }
 
   private matchesSearch(order: PurchaseOrder, query: string): boolean {
