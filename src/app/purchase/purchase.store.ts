@@ -14,6 +14,7 @@ import {
   PurchaseOrder,
   ShippingDetails,
 } from './purchase.models';
+import { PURCHASE_MESSAGES } from './purchase.messages';
 
 @Injectable({ providedIn: 'root' })
 export class PurchaseStore {
@@ -60,9 +61,7 @@ export class PurchaseStore {
       product: { ...item.product },
     }));
     if (!this.persist(CART_STORAGE_KEY, demoCart)) {
-      this.persistenceNotice.set(
-        'No fue posible cargar los productos de ejemplo en este navegador.',
-      );
+      this.persistenceNotice.set(PURCHASE_MESSAGES.storage.demoCartUnavailable);
       return false;
     }
 
@@ -98,9 +97,7 @@ export class PurchaseStore {
     if (!this.persist(CART_STORAGE_KEY, [])) {
       const rollbackSucceeded = this.persist(ORDERS_STORAGE_KEY, this.orders());
       if (!rollbackSucceeded) {
-        this.persistenceNotice.set(
-          'No se pudo completar la compra ni revertir el historial. Revisa tus pedidos antes de volver a intentarlo.',
-        );
+        this.persistenceNotice.set(PURCHASE_MESSAGES.storage.orderRollbackFailed);
         return { success: false, reason: 'rollback' };
       }
       return { success: false, reason: 'persistence' };
@@ -123,9 +120,7 @@ export class PurchaseStore {
     }
 
     if (!Array.isArray(storedCart) || !storedCart.every((item) => this.isCartItem(item))) {
-      this.persistenceNotice.set(
-        'El carrito guardado no era válido; se cargó el carrito de ejemplo.',
-      );
+      this.persistenceNotice.set(PURCHASE_MESSAGES.storage.invalidCart);
       this.persist(CART_STORAGE_KEY, INITIAL_CART);
       return INITIAL_CART;
     }
@@ -140,9 +135,7 @@ export class PurchaseStore {
     }
 
     if (!Array.isArray(storedOrders) || !storedOrders.every((order) => this.isOrder(order))) {
-      this.persistenceNotice.set(
-        'El historial guardado no era válido; se inició un historial vacío.',
-      );
+      this.persistenceNotice.set(PURCHASE_MESSAGES.storage.invalidOrders);
       this.persist(ORDERS_STORAGE_KEY, []);
       return [];
     }
@@ -155,7 +148,7 @@ export class PurchaseStore {
       const value = localStorage.getItem(key);
       return value === null ? null : (JSON.parse(value) as unknown);
     } catch (error) {
-      this.persistenceNotice.set('No fue posible leer los datos guardados en este navegador.');
+      this.persistenceNotice.set(PURCHASE_MESSAGES.storage.readFailed);
       console.error(`No se pudieron leer los datos de ${key}.`, error);
       return null;
     }
@@ -171,9 +164,7 @@ export class PurchaseStore {
       localStorage.setItem(key, JSON.stringify(value));
       return true;
     } catch (error) {
-      this.persistenceNotice.set(
-        'Los cambios se conservarán solo mientras esta pestaña permanezca abierta.',
-      );
+      this.persistenceNotice.set(PURCHASE_MESSAGES.storage.saveFailed);
       console.error(`No se pudieron guardar los datos de ${key}.`, error);
       return false;
     }

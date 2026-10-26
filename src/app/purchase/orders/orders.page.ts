@@ -6,6 +6,7 @@ import { PurchaseStore } from '../purchase.store';
 import { AppIcon } from '../../shared/icons/app-icon.component';
 import { ProductImage } from '../../shared/media/product-image.component';
 import { RouterLink } from '@angular/router';
+import { PURCHASE_MESSAGES } from '../purchase.messages';
 
 @Component({
   imports: [AppIcon, ProductImage, RouterLink],
@@ -22,7 +23,8 @@ export class OrdersPage {
   protected readonly formatDeliveryDate = formatDeliveryDate;
   protected readonly formatOrderDate = formatOrderDate;
   protected readonly deliveryWindowLabel = (value: DeliveryWindow): string =>
-    DELIVERY_WINDOWS.find((window) => window.value === value)?.label ?? 'Horario por confirmar';
+    DELIVERY_WINDOWS.find((window) => window.value === value)?.label ??
+    PURCHASE_MESSAGES.orders.unavailableDeliveryWindow;
   protected readonly filteredOrders = computed(() => {
     const query = this.searchTerm().trim().toLocaleLowerCase('es-CO');
     if (!query) {

@@ -13,6 +13,7 @@ import { DeliveryWindow, PaymentMethod } from '../purchase.models';
 import { PurchaseStore } from '../purchase.store';
 import { OrderSummary } from '../../shared/order-summary/order-summary.component';
 import { AppIcon } from '../../shared/icons/app-icon.component';
+import { PURCHASE_MESSAGES } from '../purchase.messages';
 
 @Component({
   imports: [AppIcon, OrderSummary, ReactiveFormsModule, RouterLink],
@@ -91,17 +92,7 @@ export class CheckoutPage {
 
     const result = this.purchaseStore.createOrder(this.checkoutForm.getRawValue());
     if (!result.success) {
-      if (result.reason === 'rollback') {
-        this.submitError =
-          'No se pudo completar la compra de forma segura. Revisa “Mis pedidos” antes de volver a intentarlo para evitar duplicar la orden.';
-        return;
-      }
-      if (result.reason === 'persistence') {
-        this.submitError =
-          'No fue posible guardar el pedido en este navegador. El carrito se conserva; revisa el espacio disponible e inténtalo de nuevo.';
-        return;
-      }
-      this.submitError = 'El carrito está vacío. Agrega productos antes de confirmar el pedido.';
+      this.submitError = PURCHASE_MESSAGES.checkout.orderCreation[result.reason];
       return;
     }
 
