@@ -1,0 +1,9 @@
+<img
+  [ngSrc]="product().imageSrc"
+  [alt]="product().imageAlt"
+  width="240"
+  height="240"
+  [priority]="priority()"
+  [attr.loading]="priority() ? null : 'lazy'"
+  decoding="async"
+/>

@@ -1,0 +1,41 @@
+<article class="cart-item">
+  <app-product-image class="product-image" [product]="item().product" [priority]="priority()" />
+
+  <div class="item-information">
+    <p class="item-category">{{ item().product.category }}</p>
+    <h2>{{ item().product.name }}</h2>
+    <p class="item-producer">{{ item().product.producer }} · {{ item().product.location }}</p>
+    <p class="item-unit">{{ formatCop(item().product.price) }} / {{ item().product.unit }}</p>
+
+    <div class="item-actions">
+      <div class="quantity-control" [attr.aria-label]="'Cantidad de ' + item().product.name">
+        <button
+          type="button"
+          [attr.aria-label]="'Disminuir cantidad de ' + item().product.name"
+          [disabled]="item().quantity <= 1"
+          (click)="quantityChange.emit(-1)"
+        >
+          <app-icon name="minus" />
+        </button>
+        <span aria-live="polite">{{ item().quantity }}</span>
+        <button
+          type="button"
+          [attr.aria-label]="'Aumentar cantidad de ' + item().product.name"
+          [disabled]="item().quantity >= item().product.available"
+          (click)="quantityChange.emit(1)"
+        >
+          <app-icon name="plus" />
+        </button>
+      </div>
+      <button class="remove-button" type="button" (click)="remove.emit()">
+        <app-icon name="trash" />
+        Quitar
+      </button>
+    </div>
+  </div>
+
+  <p class="item-total">
+    <span class="visually-hidden">Total de este producto:</span>
+    {{ formatCop(item().product.price * item().quantity) }}
+  </p>
+</article>

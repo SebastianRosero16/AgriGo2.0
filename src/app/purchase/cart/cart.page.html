@@ -1,0 +1,68 @@
+<section aria-labelledby="cart-title">
+  <div class="page-heading">
+    <div>
+      <p class="eyebrow">Tu compra local</p>
+      <h1 id="cart-title">Mi carrito</h1>
+      <p class="page-description">
+        @if (itemCount() === 1) {
+          1 unidad lista para continuar.
+        } @else {
+          {{ itemCount() }} unidades listas para continuar.
+        }
+      </p>
+    </div>
+    <a class="text-link" routerLink="/orders">Consultar mis pedidos</a>
+  </div>
+
+  @if (cart().length > 0) {
+    <div class="cart-layout">
+      <div class="cart-list">
+        @for (group of sellerGroups(); track group.id) {
+          <section class="seller-group" [attr.aria-labelledby]="group.headingId">
+            <header class="producer-card">
+              <div class="producer-mark" aria-hidden="true"><app-icon name="leaf" /></div>
+              <div class="producer-details">
+                <h2 [id]="group.headingId">{{ group.producer }}</h2>
+                <p><app-icon name="mapPin" /> Productor local · {{ group.location }}</p>
+              </div>
+              <span class="producer-status">
+                {{ group.items.length }}
+                {{ group.items.length === 1 ? 'producto' : 'productos' }}
+              </span>
+            </header>
+
+            <div class="seller-items">
+              @for (item of group.items; track item.product.id) {
+                <app-cart-item-card
+                  [item]="item"
+                  [priority]="item.product.id === priorityProductId"
+                  (quantityChange)="changeQuantity(item, $event)"
+                  (remove)="removeItem(item)"
+                />
+              }
+            </div>
+          </section>
+        }
+      </div>
+
+      <app-order-summary
+        [items]="cart()"
+        [showCheckoutAction]="true"
+        note="El pedido es una simulación académica; no se realizará ningún cobro."
+      />
+    </div>
+  } @else {
+    <div class="empty-state">
+      <div class="empty-icon" aria-hidden="true"><app-icon name="cart" /></div>
+      <h2>Tu carrito está vacío</h2>
+      <p>
+        Este flujo usa productos de demostración. Vuelve a cargarlos para probar el carrito y
+        finalizar un pedido.
+      </p>
+      <button class="button button-primary" type="button" (click)="restoreDemoCart()">
+        <app-icon name="cart" />
+        Cargar carrito de ejemplo
+      </button>
+    </div>
+  }
+</section>
