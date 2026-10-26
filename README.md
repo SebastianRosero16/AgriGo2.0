@@ -2,12 +2,13 @@
 
 AgriGo es un mercado digital agrícola que conecta a productores locales con personas interesadas en comprar sus productos. El proyecto busca ofrecer una experiencia sencilla para explorar productos del campo y gestionar publicaciones, aplicando los conceptos de Angular y TypeScript trabajados en la materia Electiva III.
 
-## Alcance del proyecto
+## Alcance general del proyecto
+
+El alcance general contempla las siguientes funciones; no todas están implementadas en esta entrega.
 
 ### Compradores
 
-- Consultar el catálogo de productos agrícolas.
-- Buscar productos y filtrarlos por categoría.
+- Consultar, buscar y filtrar productos agrícolas.
 - Ver el detalle de un producto y la información básica de su productor.
 - Agregar productos al carrito y ajustar cantidades.
 - Simular un pedido y consultar su confirmación e historial.
@@ -17,6 +18,15 @@ AgriGo es un mercado digital agrícola que conecta a productores locales con per
 - Consultar sus productos publicados.
 - Publicar, editar y eliminar productos.
 - Gestionar información básica como nombre, descripción, categoría, precio, unidad y disponibilidad.
+
+## Funcionalidad implementada en esta entrega
+
+- Carrito de demostración con cantidades limitadas por disponibilidad, eliminación de productos y persistencia local.
+- Checkout con validación de datos de entrega, fecha y método de pago simulado.
+- Confirmación e historial de pedidos con búsqueda local.
+- Componentes reutilizables para tarjetas de producto, imágenes, iconos y resumen de pedido.
+
+El catálogo real, la búsqueda de productos y las funciones de publicación para productores siguen pendientes de integración con el resto del equipo.
 
 ## Tecnologías y datos
 
@@ -50,7 +60,7 @@ npm audit
 - Al confirmar, se crea una orden de demostración, se vacía el carrito y se muestra la confirmación.
 - El historial permite consultar las órdenes creadas en el navegador.
 
-El catálogo inicial, los precios y el inventario son datos de ejemplo. El carrito y las órdenes se guardan en `localStorage`; cualquier persona con acceso al navegador puede modificar esos datos desde las herramientas de desarrollo. Esta aplicación no ofrece autenticación, autorización, pagos reales ni seguridad de inventario. Esas garantías requieren validación y persistencia en un backend confiable.
+Los productos, precios, inventario y productor del carrito son datos de ejemplo. El carrito y las órdenes se guardan en `localStorage`; cualquier persona con acceso al navegador puede modificar esos datos desde las herramientas de desarrollo. Esta aplicación no ofrece autenticación, autorización, pagos reales ni seguridad de inventario. Esas garantías requieren validación y persistencia en un backend confiable.
 
 El checkout de demostración también guarda los datos de contacto y dirección ingresados en el navegador junto con la orden. No uses información personal real en esta versión académica.
 
@@ -62,4 +72,4 @@ El checkout de demostración también guarda los datos de contacto y dirección 
 
 ## Estado
 
-Proyecto final de Electiva III en desarrollo.
+Proyecto final de Electiva III en desarrollo. Esta entrega se limita al flujo de compra descrito arriba.
