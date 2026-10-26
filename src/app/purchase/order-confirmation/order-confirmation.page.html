@@ -1,17 +1,20 @@
 <section aria-labelledby="confirmation-title">
   @if (order(); as confirmedOrder) {
     <div class="confirmation-card">
-      <div class="success-mark" aria-hidden="true"><app-icon name="check" /></div>
-      <p class="eyebrow">Pedido registrado</p>
-      <h1 id="confirmation-title">¡Gracias por tu pedido!</h1>
-      <p class="confirmation-copy">
-        La orden quedó guardada en este navegador como una simulación académica.
-      </p>
+      <div class="confirmation-hero">
+        <div class="success-mark" aria-hidden="true"><app-icon name="check" /></div>
+        <p class="eyebrow">Pedido de demostración registrado</p>
+        <h1 id="confirmation-title">¡Gracias por tu pedido!</h1>
+        <p class="confirmation-copy">
+          La orden quedó guardada en este navegador. No se procesó ningún pago ni se notificó a un
+          vendedor.
+        </p>
 
-      <div class="order-reference">
-        <span>Número de orden</span>
-        <strong>{{ confirmedOrder.id }}</strong>
-        <small>{{ formatOrderDate(confirmedOrder.createdAt) }}</small>
+        <div class="order-reference">
+          <span>Número de orden</span>
+          <strong>{{ confirmedOrder.id }}</strong>
+          <small>{{ formatOrderDate(confirmedOrder.createdAt) }}</small>
+        </div>
       </div>
 
       <div class="confirmation-grid">

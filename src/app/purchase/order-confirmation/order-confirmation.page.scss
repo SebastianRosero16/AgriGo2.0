@@ -6,33 +6,72 @@
 .not-found-card {
   max-width: 850px;
   margin: 0 auto;
-  padding: clamp(1.4rem, 4vw, 2.5rem);
   background: var(--surface-card);
   border: 1px solid var(--gray-200);
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow-card);
+  overflow: hidden;
 }
 
 .confirmation-card {
   text-align: center;
 }
 
-.success-mark {
-  display: grid;
-  width: 62px;
-  height: 62px;
-  place-items: center;
-  margin: 0 auto 1rem;
-  color: var(--green-700);
-  background: var(--green-100);
-  border-radius: 50%;
-  font-size: 1.8rem;
-  font-weight: 800;
+.confirmation-hero {
+  position: relative;
+  overflow: hidden;
+  padding: clamp(2rem, 6vw, 3.5rem) clamp(1.2rem, 5vw, 3rem);
+  color: white;
+  background: linear-gradient(135deg, var(--green-800), var(--green-700));
 }
 
-.eyebrow {
+.confirmation-hero::before,
+.confirmation-hero::after {
+  position: absolute;
+  width: 13rem;
+  height: 13rem;
+  background: rgb(255 255 255 / 5%);
+  border-radius: 50%;
+  content: '';
+  pointer-events: none;
+}
+
+.confirmation-hero::before {
+  top: -8rem;
+  left: -5rem;
+}
+
+.confirmation-hero::after {
+  right: -7rem;
+  bottom: -10rem;
+  width: 18rem;
+  height: 18rem;
+}
+
+.success-mark {
+  display: grid;
+  position: relative;
+  z-index: 1;
+  width: 68px;
+  height: 68px;
+  place-items: center;
+  margin: 0 auto 1rem;
+  color: white;
+  background: rgb(255 255 255 / 14%);
+  border: 1px solid rgb(255 255 255 / 30%);
+  border-radius: 50%;
+}
+
+.success-mark app-icon {
+  width: 2rem;
+  height: 2rem;
+}
+
+.confirmation-hero .eyebrow {
+  position: relative;
+  z-index: 1;
   margin: 0 0 0.35rem;
-  color: var(--green-700);
+  color: rgb(255 255 255 / 82%);
   font-size: 0.78rem;
   font-weight: 700;
   letter-spacing: 0.08em;
@@ -45,9 +84,11 @@ p {
   margin-top: 0;
 }
 
-h1 {
+.confirmation-hero h1 {
+  position: relative;
+  z-index: 1;
   margin-bottom: 0.5rem;
-  color: var(--gray-900);
+  color: white;
   font-family: var(--font-display);
   font-size: clamp(1.8rem, 4vw, 2.5rem);
   letter-spacing: -0.05em;
@@ -58,26 +99,37 @@ h1 {
   color: var(--gray-500);
 }
 
+.confirmation-copy {
+  position: relative;
+  z-index: 1;
+  max-width: 32rem;
+  margin: 0 auto;
+  color: rgb(255 255 255 / 82%);
+}
+
 .order-reference {
+  position: relative;
+  z-index: 1;
   display: grid;
   justify-items: center;
   gap: 0.25rem;
   width: fit-content;
-  margin: 1.5rem auto 2rem;
-  padding: 0.9rem 1.5rem;
-  background: var(--green-50);
-  border: 1px solid var(--green-100);
+  max-width: 100%;
+  margin: 1.5rem auto 0;
+  padding: 0.85rem 1.3rem;
+  background: rgb(255 255 255 / 10%);
+  border: 1px solid rgb(255 255 255 / 20%);
   border-radius: var(--radius-lg);
 }
 
 .order-reference span,
 .order-reference small {
-  color: var(--gray-500);
+  color: rgb(255 255 255 / 75%);
   font-size: 0.78rem;
 }
 
 .order-reference strong {
-  color: var(--green-800);
+  color: white;
   font-family: var(--font-display);
   font-size: 1.15rem;
   overflow-wrap: anywhere;
@@ -87,6 +139,7 @@ h1 {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 1rem;
+  padding: clamp(1rem, 4vw, 2rem);
   text-align: left;
 }
 
@@ -159,7 +212,7 @@ h1 {
   display: flex;
   justify-content: center;
   gap: 0.75rem;
-  margin-top: 1.5rem;
+  padding: 0 1rem clamp(1.2rem, 4vw, 2rem);
 }
 
 .button {
@@ -186,7 +239,27 @@ h1 {
 }
 
 .not-found-card {
+  padding: clamp(1.4rem, 4vw, 2.5rem);
   text-align: center;
+}
+
+.not-found-card h1 {
+  margin-bottom: 0.5rem;
+  color: var(--gray-900);
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 4vw, 2.5rem);
+  letter-spacing: -0.05em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 @media (max-width: 650px) {
