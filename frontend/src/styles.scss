@@ -1,0 +1,14 @@
+/* Reset y base global */
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  background: #f9fbe7;
+  color: #212121;
+  line-height: 1.6;
+}
+
+img { max-width: 100%; }
+
+a { color: inherit; }

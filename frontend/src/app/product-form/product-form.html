@@ -1,0 +1,118 @@
+<section class="form-page">
+  <header class="form-page__header">
+    <h1 class="form-page__title">
+      {{ isEditMode() ? 'Editar producto' : 'Publicar producto' }}
+    </h1>
+    <p class="form-page__subtitle">
+      {{ isEditMode() ? 'Actualiza la información de tu publicación.' : 'Completa los datos para que los compradores puedan encontrar tu producto.' }}
+    </p>
+  </header>
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="product-form" novalidate>
+
+    <!-- Nombre -->
+    <div class="form-group" [class.form-group--error]="fieldError('name')">
+      <label for="name">Nombre del producto *</label>
+      <input id="name" type="text" formControlName="name" placeholder="Ej: Tomate chonto" />
+      @if (fieldError('name')) {
+        @if (f.name.errors?.['required']) { <span class="error-msg">El nombre es obligatorio.</span> }
+        @else if (f.name.errors?.['minlength']) { <span class="error-msg">Mínimo 3 caracteres.</span> }
+        @else if (f.name.errors?.['maxlength']) { <span class="error-msg">Máximo 80 caracteres.</span> }
+      }
+    </div>
+
+    <!-- Descripción -->
+    <div class="form-group" [class.form-group--error]="fieldError('description')">
+      <label for="description">Descripción *</label>
+      <textarea id="description" formControlName="description" rows="3"
+        placeholder="Describe tu producto: calidad, origen, cómo se cosecha…"></textarea>
+      @if (fieldError('description')) {
+        @if (f.description.errors?.['required']) { <span class="error-msg">La descripción es obligatoria.</span> }
+        @else if (f.description.errors?.['minlength']) { <span class="error-msg">Mínimo 10 caracteres.</span> }
+        @else if (f.description.errors?.['maxlength']) { <span class="error-msg">Máximo 300 caracteres.</span> }
+      }
+    </div>
+
+    <!-- Categoría -->
+    <div class="form-group" [class.form-group--error]="fieldError('category')">
+      <label for="category">Categoría *</label>
+      <select id="category" formControlName="category">
+        <option value="" disabled>Selecciona una categoría</option>
+        @for (cat of categories; track cat) {
+          <option [value]="cat">{{ cat }}</option>
+        }
+      </select>
+      @if (fieldError('category')) {
+        <span class="error-msg">Selecciona una categoría.</span>
+      }
+    </div>
+
+    <!-- Precio y Unidad (fila) -->
+    <div class="form-row">
+      <div class="form-group" [class.form-group--error]="fieldError('price')">
+        <label for="price">Precio (COP) *</label>
+        <input id="price" type="number" formControlName="price" min="1" placeholder="Ej: 4200" />
+        @if (fieldError('price')) {
+          <span class="error-msg">Ingresa un precio mayor a 0.</span>
+        }
+      </div>
+
+      <div class="form-group" [class.form-group--error]="fieldError('unit')">
+        <label for="unit">Unidad *</label>
+        <input id="unit" type="text" formControlName="unit" placeholder="Ej: kg, unidad, bandeja" />
+        @if (fieldError('unit')) {
+          <span class="error-msg">La unidad es obligatoria.</span>
+        }
+      </div>
+    </div>
+
+    <!-- Stock -->
+    <div class="form-group" [class.form-group--error]="fieldError('stock')">
+      <label for="stock">Stock disponible *</label>
+      <input id="stock" type="number" formControlName="stock" min="0" placeholder="Ej: 50" />
+      @if (fieldError('stock')) {
+        <span class="error-msg">Ingresa un número entero mayor o igual a 0.</span>
+      }
+    </div>
+
+    <!-- Productor -->
+    <div class="form-group" [class.form-group--error]="fieldError('producer')">
+      <label for="producer">Nombre del productor / finca *</label>
+      <input id="producer" type="text" formControlName="producer" placeholder="Ej: Finca La Esperanza" />
+      @if (fieldError('producer')) {
+        <span class="error-msg">El nombre del productor es obligatorio (mínimo 3 caracteres).</span>
+      }
+    </div>
+
+    <!-- Ubicación -->
+    <div class="form-group" [class.form-group--error]="fieldError('location')">
+      <label for="location">Ubicación *</label>
+      <input id="location" type="text" formControlName="location" placeholder="Ej: Fusagasugá, Cundinamarca" />
+      @if (fieldError('location')) {
+        <span class="error-msg">La ubicación es obligatoria.</span>
+      }
+    </div>
+
+    <!-- URL imagen -->
+    <div class="form-group" [class.form-group--error]="fieldError('imageUrl')">
+      <label for="imageUrl">URL de imagen *</label>
+      <input id="imageUrl" type="url" formControlName="imageUrl" placeholder="https://…" />
+      @if (fieldError('imageUrl')) {
+        @if (f.imageUrl.errors?.['required']) { <span class="error-msg">La URL es obligatoria.</span> }
+        @else { <span class="error-msg">Debe ser una URL válida que empiece por http/https.</span> }
+      }
+      @if (form.value.imageUrl && !fieldError('imageUrl')) {
+        <img [src]="form.value.imageUrl" alt="Vista previa" class="img-preview" />
+      }
+    </div>
+
+    <!-- Acciones -->
+    <div class="form-actions">
+      <button type="button" class="btn btn--outline" (click)="cancel()">Cancelar</button>
+      <button type="submit" class="btn btn--primary">
+        {{ isEditMode() ? 'Guardar cambios' : 'Publicar producto' }}
+      </button>
+    </div>
+
+  </form>
+</section>

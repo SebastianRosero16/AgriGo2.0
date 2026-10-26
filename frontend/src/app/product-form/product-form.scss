@@ -1,0 +1,135 @@
+@use 'sass:color';
+
+// ── Variables ──────────────────────────────────────────────────────────────
+$green:       #2e7d32;
+$green-light: #e8f5e9;
+$red:         #c62828;
+$red-light:   #ffebee;
+$gray-200:    #eeeeee;
+$gray-700:    #616161;
+$radius:      8px;
+
+// ── Page layout ────────────────────────────────────────────────────────────
+.form-page {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.form-page__header {
+  margin-bottom: 2rem;
+}
+
+.form-page__title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: $green;
+  margin: 0;
+}
+
+.form-page__subtitle {
+  color: $gray-700;
+  margin: 0.25rem 0 0;
+}
+
+// ── Form ───────────────────────────────────────────────────────────────────
+.product-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+
+  @media (max-width: 480px) { grid-template-columns: 1fr; }
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+
+  label {
+    font-weight: 600;
+    font-size: 0.875rem;
+    color: #333;
+  }
+
+  input, textarea, select {
+    padding: 0.65rem 0.875rem;
+    border: 1.5px solid $gray-200;
+    border-radius: $radius;
+    font-size: 0.95rem;
+    transition: border-color 0.15s;
+    background: #fff;
+
+    &:focus {
+      outline: none;
+      border-color: $green;
+    }
+  }
+
+  textarea { resize: vertical; }
+
+  &--error {
+    input, textarea, select {
+      border-color: $red;
+      background: $red-light;
+    }
+  }
+}
+
+.error-msg {
+  color: $red;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+// ── Image preview ──────────────────────────────────────────────────────────
+.img-preview {
+  margin-top: 0.5rem;
+  width: 100%;
+  max-height: 200px;
+  object-fit: cover;
+  border-radius: $radius;
+  border: 1px solid $gray-200;
+}
+
+// ── Actions ────────────────────────────────────────────────────────────────
+.form-actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+  padding-top: 0.5rem;
+  flex-wrap: wrap;
+}
+
+// ── Buttons ────────────────────────────────────────────────────────────────
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.65rem 1.5rem;
+  border-radius: $radius;
+  font-weight: 600;
+  font-size: 0.875rem;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+
+  &--primary {
+    background: $green;
+    color: #fff;
+    &:hover { background: color.adjust($green, $lightness: -8%); }
+  }
+
+  &--outline {
+    background: transparent;
+    color: $green;
+    border-color: $green;
+    &:hover { background: $green-light; }
+  }
+}

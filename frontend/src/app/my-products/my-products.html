@@ -1,0 +1,74 @@
+<section class="my-products">
+  <header class="my-products__header">
+    <div>
+      <h1 class="my-products__title">Mis publicaciones</h1>
+      <p class="my-products__subtitle">Gestiona los productos que ofreces en AgriGo</p>
+    </div>
+    <a routerLink="/publicar" class="btn btn--primary">+ Publicar producto</a>
+  </header>
+
+  @if (products().length === 0) {
+    <div class="empty-state">
+      <span class="empty-state__icon">🌱</span>
+      <p>Aún no tienes productos publicados.</p>
+      <a routerLink="/publicar" class="btn btn--primary">Publicar mi primer producto</a>
+    </div>
+  }
+
+  @if (products().length > 0) {
+    <div class="products-table-wrapper">
+      <table class="products-table">
+        <thead>
+          <tr>
+            <th>Producto</th>
+            <th>Categoría</th>
+            <th>Precio</th>
+            <th>Unidad</th>
+            <th>Stock</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (product of products(); track product.id) {
+            <tr>
+              <td class="product-name-cell">
+                <img [src]="product.imageUrl" [alt]="product.name" class="product-thumb" />
+                <span>{{ product.name }}</span>
+              </td>
+              <td>{{ product.category }}</td>
+              <td class="price-cell">${{ product.price | number: '1.0-0' }} / {{ product.unit }}</td>
+              <td>{{ product.unit }}</td>
+              <td>
+                <span class="stock-badge" [ngClass]="stockClass(product.stock)">
+                  {{ stockLabel(product.stock) }} ({{ product.stock }})
+                </span>
+              </td>
+              <td class="actions-cell">
+                <button class="btn btn--outline btn--sm" (click)="editProduct(product.id)">
+                  Editar
+                </button>
+                <button class="btn btn--danger btn--sm" (click)="askDelete(product.id)">
+                  Eliminar
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</section>
+
+<!-- Modal de confirmación de eliminación -->
+@if (confirmDeleteId() !== null) {
+  <div class="modal-overlay" (click)="cancelDelete()">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <h2 class="modal__title">¿Eliminar producto?</h2>
+      <p class="modal__body">Esta acción no se puede deshacer. El producto dejará de aparecer en el catálogo.</p>
+      <div class="modal__actions">
+        <button class="btn btn--outline" (click)="cancelDelete()">Cancelar</button>
+        <button class="btn btn--danger" (click)="confirmDelete()">Sí, eliminar</button>
+      </div>
+    </div>
+  </div>
+}
