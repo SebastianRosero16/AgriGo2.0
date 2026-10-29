@@ -8,13 +8,15 @@
     <a class="text-link" routerLink="/cart">← Volver al carrito</a>
   </div>
 
-  @if (cart().length === 0) {
+  <div *ngIf="cart().length === 0; else checkoutFormTemplate">
     <div class="empty-checkout">
       <h2>No hay productos para confirmar</h2>
       <p>Agrega al menos un producto antes de completar el pedido.</p>
       <a class="button button-primary" routerLink="/cart">Ir al carrito</a>
     </div>
-  } @else {
+  </div>
+
+  <ng-template #checkoutFormTemplate>
     <div class="checkout-layout">
       <form class="checkout-form" [formGroup]="checkoutForm" (ngSubmit)="submitOrder()" novalidate>
         <section class="form-card" aria-labelledby="delivery-title">
@@ -37,17 +39,35 @@
                 [attr.aria-invalid]="isInvalid('fullName')"
                 [attr.aria-describedby]="isInvalid('fullName') ? 'fullName-error' : null"
               />
-              @if (isInvalid('fullName')) {
-                <p class="field-error" id="fullName-error">
-                  @if (checkoutForm.controls.fullName.hasError('required')) {
-                    Ingresa el nombre de quien recibe el pedido.
-                  } @else if (checkoutForm.controls.fullName.hasError('minlength')) {
-                    El nombre debe tener al menos 3 caracteres.
-                  } @else {
-                    El nombre no puede superar 80 caracteres.
-                  }
+              <ng-container *ngIf="isInvalid('fullName')">
+                <p
+                  *ngIf="
+                    checkoutForm.controls.fullName.hasError('required');
+                    else fullNameLengthError
+                  "
+                  class="field-error"
+                  id="fullName-error"
+                >
+                  Ingresa el nombre de quien recibe el pedido.
                 </p>
-              }
+                <ng-template #fullNameLengthError>
+                  <p
+                    *ngIf="
+                      checkoutForm.controls.fullName.hasError('minlength');
+                      else fullNameMaxLengthError
+                    "
+                    class="field-error"
+                    id="fullName-error"
+                  >
+                    El nombre debe tener al menos 3 caracteres.
+                  </p>
+                </ng-template>
+                <ng-template #fullNameMaxLengthError>
+                  <p class="field-error" id="fullName-error">
+                    El nombre no puede superar 80 caracteres.
+                  </p>
+                </ng-template>
+              </ng-container>
             </div>
 
             <div class="form-field">
@@ -62,9 +82,9 @@
                 [attr.aria-invalid]="isInvalid('phone')"
                 [attr.aria-describedby]="isInvalid('phone') ? 'phone-error' : null"
               />
-              @if (isInvalid('phone')) {
-                <p class="field-error" id="phone-error">Ingresa un teléfono válido.</p>
-              }
+              <p *ngIf="isInvalid('phone')" class="field-error" id="phone-error">
+                Ingresa un teléfono válido.
+              </p>
             </div>
           </div>
 
@@ -79,11 +99,9 @@
               [attr.aria-invalid]="isInvalid('address')"
               [attr.aria-describedby]="isInvalid('address') ? 'address-error' : null"
             />
-            @if (isInvalid('address')) {
-              <p class="field-error" id="address-error">
-                Ingresa una dirección de al menos 5 caracteres.
-              </p>
-            }
+            <p *ngIf="isInvalid('address')" class="field-error" id="address-error">
+              Ingresa una dirección de al menos 5 caracteres.
+            </p>
           </div>
 
           <div class="form-grid three-columns">
@@ -97,9 +115,9 @@
                 [attr.aria-invalid]="isInvalid('city')"
                 [attr.aria-describedby]="isInvalid('city') ? 'city-error' : null"
               />
-              @if (isInvalid('city')) {
-                <p class="field-error" id="city-error">Ingresa una ciudad válida.</p>
-              }
+              <p *ngIf="isInvalid('city')" class="field-error" id="city-error">
+                Ingresa una ciudad válida.
+              </p>
             </div>
             <div class="form-field">
               <label for="department">Departamento *</label>
@@ -111,9 +129,9 @@
                 [attr.aria-invalid]="isInvalid('department')"
                 [attr.aria-describedby]="isInvalid('department') ? 'department-error' : null"
               />
-              @if (isInvalid('department')) {
-                <p class="field-error" id="department-error">Ingresa un departamento válido.</p>
-              }
+              <p *ngIf="isInvalid('department')" class="field-error" id="department-error">
+                Ingresa un departamento válido.
+              </p>
             </div>
             <div class="form-field">
               <label for="postalCode">Código postal</label>
@@ -126,9 +144,9 @@
                 [attr.aria-invalid]="isInvalid('postalCode')"
                 [attr.aria-describedby]="isInvalid('postalCode') ? 'postalCode-error' : null"
               />
-              @if (isInvalid('postalCode')) {
-                <p class="field-error" id="postalCode-error">Usa entre 5 y 10 dígitos.</p>
-              }
+              <p *ngIf="isInvalid('postalCode')" class="field-error" id="postalCode-error">
+                Usa entre 5 y 10 dígitos.
+              </p>
             </div>
           </div>
 
@@ -142,11 +160,9 @@
               [attr.aria-invalid]="isInvalid('instructions')"
               [attr.aria-describedby]="isInvalid('instructions') ? 'instructions-error' : null"
             ></textarea>
-            @if (isInvalid('instructions')) {
-              <p class="field-error" id="instructions-error">
-                Las instrucciones no pueden superar 250 caracteres.
-              </p>
-            }
+            <p *ngIf="isInvalid('instructions')" class="field-error" id="instructions-error">
+              Las instrucciones no pueden superar 250 caracteres.
+            </p>
           </div>
         </section>
 
@@ -168,16 +184,16 @@
                 formControlName="deliveryDate"
                 [attr.aria-invalid]="isInvalid('deliveryDate')"
               />
-              @if (isInvalid('deliveryDate')) {
-                <p class="field-error">Selecciona una fecha igual o posterior a mañana.</p>
-              }
+              <p *ngIf="isInvalid('deliveryDate')" class="field-error">
+                Selecciona una fecha igual o posterior a mañana.
+              </p>
             </div>
             <div class="form-field">
               <label for="deliveryWindow">Horario preferido *</label>
               <select id="deliveryWindow" formControlName="deliveryWindow">
-                @for (window of deliveryWindows; track window.value) {
-                  <option [value]="window.value">{{ window.label }}</option>
-                }
+                <option *ngFor="let window of deliveryWindows" [value]="window.value">
+                  {{ window.label }}
+                </option>
               </select>
             </div>
           </div>
@@ -192,30 +208,27 @@
             </div>
           </div>
           <div class="payment-options">
-            @for (method of paymentMethods; track method.value) {
-              <label class="payment-option">
-                <input type="radio" formControlName="paymentMethod" [value]="method.value" />
-                <span class="radio-mark" aria-hidden="true"></span>
-                <span>
-                  <strong>{{ method.label }}</strong>
-                  <small>
-                    @if (method.value === 'cash') {
-                      <app-icon name="receipt" />
-                      Paga en efectivo cuando recibas el pedido.
-                    } @else {
-                      <app-icon name="bank" />
-                      El registro de la transferencia es solo demostrativo.
-                    }
-                  </small>
-                </span>
-              </label>
-            }
+            <label *ngFor="let method of paymentMethods" class="payment-option">
+              <input type="radio" formControlName="paymentMethod" [value]="method.value" />
+              <span class="radio-mark" aria-hidden="true"></span>
+              <span>
+                <strong>{{ method.label }}</strong>
+                <small>
+                  <ng-container *ngIf="method.value === 'cash'; else transferDescription">
+                    <app-icon name="receipt" />
+                    Paga en efectivo cuando recibas el pedido.
+                  </ng-container>
+                  <ng-template #transferDescription>
+                    <app-icon name="bank" />
+                    El registro de la transferencia es solo demostrativo.
+                  </ng-template>
+                </small>
+              </span>
+            </label>
           </div>
         </section>
 
-        @if (submitError) {
-          <p class="submit-error" role="alert">{{ submitError }}</p>
-        }
+        <p *ngIf="submitError" class="submit-error" role="alert">{{ submitError }}</p>
         <button class="button button-primary submit-button" type="submit">
           Confirmar pedido · {{ formatCop(total()) }}
           <app-icon name="arrowRight" />
@@ -229,5 +242,5 @@
         note="Orden de demostración. No se realizará un cobro."
       />
     </div>
-  }
+  </ng-template>
 </section>

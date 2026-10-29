@@ -1,4 +1,5 @@
 import { Component, input } from '@angular/core';
+import { NgFor } from '@angular/common';
 
 export const APP_ICON_NAMES = [
   'arrowRight',
@@ -44,6 +45,7 @@ const iconPaths: Record<AppIconName, readonly string[]> = {
 };
 
 @Component({
+  imports: [NgFor],
   selector: 'app-icon',
   templateUrl: './app-icon.component.html',
   styleUrl: './app-icon.component.scss',

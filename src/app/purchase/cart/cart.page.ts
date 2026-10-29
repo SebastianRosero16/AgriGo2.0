@@ -1,4 +1,5 @@
 import { Component, computed, inject } from '@angular/core';
+import { NgFor, NgIf } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { CartItemCard } from '../../shared/cart-item-card/cart-item-card.component';
 import { AppIcon } from '../../shared/icons/app-icon.component';
@@ -16,7 +17,7 @@ interface SellerGroup {
 }
 
 @Component({
-  imports: [CartItemCard, AppIcon, OrderSummary, RouterLink],
+  imports: [CartItemCard, AppIcon, NgFor, NgIf, OrderSummary, RouterLink],
   selector: 'app-cart-page',
   styleUrl: './cart.page.scss',
   templateUrl: './cart.page.html',

@@ -1,4 +1,5 @@
 import { Component, inject } from '@angular/core';
+import { NgFor, NgIf } from '@angular/common';
 import {
   FormBuilder,
   ReactiveFormsModule,
@@ -16,7 +17,7 @@ import { AppIcon } from '../../shared/icons/app-icon.component';
 import { PURCHASE_MESSAGES } from '../purchase.messages';
 
 @Component({
-  imports: [AppIcon, OrderSummary, ReactiveFormsModule, RouterLink],
+  imports: [AppIcon, NgFor, NgIf, OrderSummary, ReactiveFormsModule, RouterLink],
   selector: 'app-checkout-page',
   styleUrl: './checkout.page.scss',
   templateUrl: './checkout.page.html',

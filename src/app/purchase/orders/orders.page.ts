@@ -1,4 +1,5 @@
 import { Component, computed, inject, signal } from '@angular/core';
+import { NgFor, NgIf } from '@angular/common';
 import { DELIVERY_WINDOWS } from '../purchase.constants';
 import { formatCop, formatDeliveryDate, formatOrderDate } from '../purchase.format';
 import { DeliveryWindow, PurchaseOrder } from '../purchase.models';
@@ -9,7 +10,7 @@ import { RouterLink } from '@angular/router';
 import { PURCHASE_MESSAGES } from '../purchase.messages';
 
 @Component({
-  imports: [AppIcon, ProductImage, RouterLink],
+  imports: [AppIcon, NgFor, NgIf, ProductImage, RouterLink],
   selector: 'app-orders-page',
   styleUrl: './orders.page.scss',
   templateUrl: './orders.page.html',

@@ -11,7 +11,5 @@
   [attr.aria-label]="label() ?? null"
   [attr.role]="label() ? 'img' : null"
 >
-  @for (path of icons[name()]; track path) {
-    <path [attr.d]="path" />
-  }
+  <path *ngFor="let path of icons[name()]" [attr.d]="path" />
 </svg>

@@ -1,4 +1,5 @@
 import { Component, computed, inject } from '@angular/core';
+import { NgFor, NgIf } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { DELIVERY_WINDOWS, PAYMENT_METHODS } from '../purchase.constants';
@@ -8,7 +9,7 @@ import { AppIcon } from '../../shared/icons/app-icon.component';
 import { PURCHASE_MESSAGES } from '../purchase.messages';
 
 @Component({
-  imports: [AppIcon, RouterLink],
+  imports: [AppIcon, NgFor, NgIf, RouterLink],
   selector: 'app-order-confirmation-page',
   styleUrl: './order-confirmation.page.scss',
   templateUrl: './order-confirmation.page.html',

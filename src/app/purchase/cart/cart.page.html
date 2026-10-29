@@ -4,54 +4,54 @@
       <p class="eyebrow">Tu compra local</p>
       <h1 id="cart-title">Mi carrito</h1>
       <p class="page-description">
-        @if (itemCount() === 1) {
+        <ng-container *ngIf="itemCount() === 1; else multipleUnits">
           1 unidad lista para continuar.
-        } @else {
-          {{ itemCount() }} unidades listas para continuar.
-        }
+        </ng-container>
+        <ng-template #multipleUnits>{{ itemCount() }} unidades listas para continuar.</ng-template>
       </p>
     </div>
     <a class="text-link" routerLink="/orders">Consultar mis pedidos</a>
   </div>
 
-  @if (cart().length > 0) {
-    <div class="cart-layout">
-      <div class="cart-list">
-        @for (group of sellerGroups(); track group.id) {
-          <section class="seller-group" [attr.aria-labelledby]="group.headingId">
-            <header class="producer-card">
-              <div class="producer-mark" aria-hidden="true"><app-icon name="leaf" /></div>
-              <div class="producer-details">
-                <h2 [id]="group.headingId">{{ group.producer }}</h2>
-                <p><app-icon name="mapPin" /> Productor local · {{ group.location }}</p>
-              </div>
-              <span class="producer-status">
-                {{ group.items.length }}
-                {{ group.items.length === 1 ? 'producto' : 'productos' }}
-              </span>
-            </header>
+  <div *ngIf="cart().length > 0; else emptyCart" class="cart-layout">
+    <div class="cart-list">
+      <section
+        *ngFor="let group of sellerGroups()"
+        class="seller-group"
+        [attr.aria-labelledby]="group.headingId"
+      >
+        <header class="producer-card">
+          <div class="producer-mark" aria-hidden="true"><app-icon name="leaf" /></div>
+          <div class="producer-details">
+            <h2 [id]="group.headingId">{{ group.producer }}</h2>
+            <p><app-icon name="mapPin" /> Productor local · {{ group.location }}</p>
+          </div>
+          <span class="producer-status">
+            {{ group.items.length }}
+            {{ group.items.length === 1 ? 'producto' : 'productos' }}
+          </span>
+        </header>
 
-            <div class="seller-items">
-              @for (item of group.items; track item.product.id) {
-                <app-cart-item-card
-                  [item]="item"
-                  [priority]="item.product.id === priorityProductId"
-                  (quantityChange)="changeQuantity(item, $event)"
-                  (remove)="removeItem(item)"
-                />
-              }
-            </div>
-          </section>
-        }
-      </div>
-
-      <app-order-summary
-        [items]="cart()"
-        [showCheckoutAction]="true"
-        note="El pedido es una simulación académica; no se realizará ningún cobro."
-      />
+        <div class="seller-items">
+          <app-cart-item-card
+            *ngFor="let item of group.items"
+            [item]="item"
+            [priority]="item.product.id === priorityProductId"
+            (quantityChange)="changeQuantity(item, $event)"
+            (remove)="removeItem(item)"
+          />
+        </div>
+      </section>
     </div>
-  } @else {
+
+    <app-order-summary
+      [items]="cart()"
+      [showCheckoutAction]="true"
+      note="El pedido es una simulación académica; no se realizará ningún cobro."
+    />
+  </div>
+
+  <ng-template #emptyCart>
     <div class="empty-state">
       <div class="empty-icon" aria-hidden="true"><app-icon name="cart" /></div>
       <h2>Tu carrito está vacío</h2>
@@ -64,5 +64,5 @@
         Cargar carrito de ejemplo
       </button>
     </div>
-  }
+  </ng-template>
 </section>

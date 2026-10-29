@@ -19,95 +19,95 @@
     </label>
   </div>
 
-  @if (orders().length === 0) {
+  <div *ngIf="orders().length === 0; else orderHistory">
     <div class="empty-state">
       <div class="empty-icon" aria-hidden="true"><app-icon name="receipt" /></div>
       <h2>Aún no tienes pedidos</h2>
       <p>Cuando confirmes un pedido, aparecerá aquí con su detalle y estado.</p>
       <a class="button button-primary" routerLink="/cart">Revisar mi carrito</a>
     </div>
-  } @else if (filteredOrders().length === 0) {
-    <div class="no-results" role="status">
+  </div>
+
+  <ng-template #orderHistory>
+    <div *ngIf="filteredOrders().length === 0; else orderResults" class="no-results" role="status">
       <h2>No encontramos coincidencias</h2>
       <p>Prueba con otro número de orden o nombre de producto.</p>
     </div>
-  } @else {
+  </ng-template>
+
+  <ng-template #orderResults>
     <div class="orders-list">
-      @for (order of filteredOrders(); track order.id) {
-        <article class="order-card">
-          <div class="order-header">
-            <div>
-              <p class="order-date">{{ formatOrderDate(order.createdAt) }}</p>
-              <h2>Orden {{ order.id }}</h2>
-            </div>
-            <span class="status-badge"><app-icon name="check" /> Registrado</span>
+      <article *ngFor="let order of filteredOrders()" class="order-card">
+        <div class="order-header">
+          <div>
+            <p class="order-date">{{ formatOrderDate(order.createdAt) }}</p>
+            <h2>Orden {{ order.id }}</h2>
           </div>
+          <span class="status-badge"><app-icon name="check" /> Registrado</span>
+        </div>
 
-          <div class="order-products" role="list" aria-label="Productos de la orden">
-            @for (item of order.items; track item.product.id; let index = $index) {
-              @if (index < 4) {
-                <div
-                  class="product-thumbnail"
-                  role="listitem"
-                  [attr.aria-label]="
-                    item.quantity +
-                    (item.quantity === 1 ? ' unidad de ' : ' unidades de ') +
-                    item.product.name
-                  "
-                >
-                  <app-product-image [product]="item.product" />
-                  <span aria-hidden="true">{{ item.quantity }}</span>
-                </div>
-              }
-            }
-            @if (order.items.length > 4) {
-              <span
-                class="more-products"
-                role="listitem"
-                [attr.aria-label]="order.items.length - 4 + ' productos más'"
-              >
-                +{{ order.items.length - 4 }}
-              </span>
-            }
-          </div>
+        <div class="order-products" role="list" aria-label="Productos de la orden">
+          <ng-container *ngFor="let item of order.items; let index = index">
+            <div
+              *ngIf="index < 4"
+              class="product-thumbnail"
+              role="listitem"
+              [attr.aria-label]="
+                item.quantity +
+                (item.quantity === 1 ? ' unidad de ' : ' unidades de ') +
+                item.product.name
+              "
+            >
+              <app-product-image [product]="item.product" />
+              <span aria-hidden="true">{{ item.quantity }}</span>
+            </div>
+          </ng-container>
+          <span
+            *ngIf="order.items.length > 4"
+            class="more-products"
+            role="listitem"
+            [attr.aria-label]="order.items.length - 4 + ' productos más'"
+          >
+            +{{ order.items.length - 4 }}
+          </span>
+        </div>
 
-          <div class="order-details">
-            <div>
-              <span class="detail-label">Productos</span>
-              <strong>
-                {{ order.items.length }}
-                {{ order.items.length === 1 ? 'producto' : 'productos' }}
-                · {{ productCount(order) }} {{ productCount(order) === 1 ? 'unidad' : 'unidades' }}
-              </strong>
-            </div>
-            <div>
-              <span class="detail-label">Entrega programada</span>
-              <strong>
-                {{ formatDeliveryDate(order.shippingDetails.deliveryDate) }} ·
-                {{ deliveryWindowLabel(order.shippingDetails.deliveryWindow) }}
-              </strong>
-            </div>
-            <div>
-              <span class="detail-label">Destino</span>
-              <strong
-                >{{ order.shippingDetails.city }}, {{ order.shippingDetails.department }}</strong
-              >
-            </div>
-            <div class="order-total">
-              <span class="detail-label">Total simulado</span>
-              <strong>{{ formatCop(order.total) }}</strong>
-            </div>
+        <div class="order-details">
+          <div>
+            <span class="detail-label">Productos</span>
+            <strong>
+              {{ order.items.length }}
+              {{ order.items.length === 1 ? 'producto' : 'productos' }}
+              · {{ productCount(order) }} {{ productCount(order) === 1 ? 'unidad' : 'unidades' }}
+            </strong>
           </div>
+          <div>
+            <span class="detail-label">Entrega programada</span>
+            <strong>
+              {{ formatDeliveryDate(order.shippingDetails.deliveryDate) }} ·
+              {{ deliveryWindowLabel(order.shippingDetails.deliveryWindow) }}
+            </strong>
+          </div>
+          <div>
+            <span class="detail-label">Destino</span>
+            <strong
+              >{{ order.shippingDetails.city }}, {{ order.shippingDetails.department }}</strong
+            >
+          </div>
+          <div class="order-total">
+            <span class="detail-label">Total simulado</span>
+            <strong>{{ formatCop(order.total) }}</strong>
+          </div>
+        </div>
 
-          <div class="order-footer">
-            <p>Productor: {{ producerNames(order) }}</p>
-            <a class="button button-secondary" [routerLink]="['/orders', order.id]">
-              Ver detalle
-              <app-icon name="arrowRight" />
-            </a>
-          </div>
-        </article>
-      }
+        <div class="order-footer">
+          <p>Productor: {{ producerNames(order) }}</p>
+          <a class="button button-secondary" [routerLink]="['/orders', order.id]">
+            Ver detalle
+            <app-icon name="arrowRight" />
+          </a>
+        </div>
+      </article>
     </div>
-  }
+  </ng-template>
 </section>

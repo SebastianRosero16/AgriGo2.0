@@ -67,9 +67,13 @@ El checkout de demostración también guarda los datos de contacto y dirección 
 ## Organización del frontend
 
 - `src/app/shared/` contiene componentes visuales reutilizables, iconografía SVG propia e imágenes locales optimizadas.
+- `src/app/shared/models/product.model.ts` define el modelo de producto compartido por el catálogo y el carrito.
 - `src/app/purchase/` agrupa las pantallas y el estado del flujo de compra.
+- Las plantillas del frontend usan `*ngIf` y `*ngFor` para mantener la sintaxis revisada en clase.
 - Los modelos definen los datos; las constantes y los datos de ejemplo se mantienen separados de las vistas.
 - Los mensajes dinámicos del flujo de compra se agrupan por pantalla en `purchase.messages.ts`; los textos propios de la estructura visual permanecen en sus plantillas HTML. Las constantes de negocio compartidas y las funciones de formato conservan sus archivos dedicados.
+
+El modelo de producto usa `id` numérico, `stock` e `imageUrl`. Al cambiar el formato persistido del carrito y los pedidos, la versión local pasa a claves `v2`; los datos de demostración previos en claves `v1` no se migran.
 
 ## Estado
 
