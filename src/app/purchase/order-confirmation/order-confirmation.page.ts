@@ -3,13 +3,19 @@ import { NgFor, NgIf } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { DELIVERY_WINDOWS, PAYMENT_METHODS } from '../purchase.constants';
-import { formatCop, formatDeliveryDate, formatOrderDate } from '../purchase.format';
+import {
+  formatCop,
+  formatDeliveryDate,
+  formatOrderDate,
+  formatOrderReference,
+} from '../purchase.format';
 import { PurchaseStore } from '../purchase.store';
 import { AppIcon } from '../../shared/icons/app-icon.component';
 import { PURCHASE_MESSAGES } from '../purchase.messages';
+import { ProductImage } from '../../shared/media/product-image.component';
 
 @Component({
-  imports: [AppIcon, NgFor, NgIf, RouterLink],
+  imports: [AppIcon, NgFor, NgIf, ProductImage, RouterLink],
   selector: 'app-order-confirmation-page',
   styleUrl: './order-confirmation.page.scss',
   templateUrl: './order-confirmation.page.html',
@@ -29,6 +35,7 @@ export class OrderConfirmationPage {
   protected readonly formatCop = formatCop;
   protected readonly formatDeliveryDate = formatDeliveryDate;
   protected readonly formatOrderDate = formatOrderDate;
+  protected readonly formatOrderReference = formatOrderReference;
   protected readonly deliveryWindowLabel = (value: string): string =>
     DELIVERY_WINDOWS.find((window) => window.value === value)?.label ??
     PURCHASE_MESSAGES.orderConfirmation.unspecifiedValue;

@@ -11,4 +11,5 @@ import type { Product } from '../models/product.model';
 export class ProductImage {
   readonly product = input.required<Product>();
   readonly priority = input(false);
+  readonly eager = input(false);
 }

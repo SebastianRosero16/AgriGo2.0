@@ -1,9 +1,11 @@
 <section aria-labelledby="orders-title">
   <div class="page-heading">
     <div>
-      <p class="eyebrow">Tus compras</p>
+      <p class="eyebrow">Historial local</p>
       <h1 id="orders-title">Mis pedidos</h1>
-      <p class="page-description">Consulta las órdenes que has creado en este navegador.</p>
+      <p class="page-description">
+        Pedidos de demostración guardados aquí; no se gestionan pagos ni entregas.
+      </p>
     </div>
     <label class="search-field">
       <span class="visually-hidden">Buscar por número de orden o producto</span>
@@ -23,7 +25,9 @@
     <div class="empty-state">
       <div class="empty-icon" aria-hidden="true"><app-icon name="receipt" /></div>
       <h2>Aún no tienes pedidos</h2>
-      <p>Cuando confirmes un pedido, aparecerá aquí con su detalle y estado.</p>
+      <p>
+        Al completar el formulario, el pedido de demostración se guardará aquí en este navegador.
+      </p>
       <a class="button button-primary" routerLink="/cart">Revisar mi carrito</a>
     </div>
   </div>
@@ -41,9 +45,9 @@
         <div class="order-header">
           <div>
             <p class="order-date">{{ formatOrderDate(order.createdAt) }}</p>
-            <h2>Orden {{ order.id }}</h2>
+            <h2>Orden {{ formatOrderReference(order.id) }}</h2>
           </div>
-          <span class="status-badge"><app-icon name="check" /> Registrado</span>
+          <span class="status-badge"><app-icon name="receipt" /> Simulado</span>
         </div>
 
         <div class="order-products" role="list" aria-label="Productos de la orden">
@@ -82,14 +86,14 @@
             </strong>
           </div>
           <div>
-            <span class="detail-label">Entrega programada</span>
+            <span class="detail-label">Fecha y horario elegidos</span>
             <strong>
               {{ formatDeliveryDate(order.shippingDetails.deliveryDate) }} ·
               {{ deliveryWindowLabel(order.shippingDetails.deliveryWindow) }}
             </strong>
           </div>
           <div>
-            <span class="detail-label">Destino</span>
+            <span class="detail-label">Destino indicado</span>
             <strong
               >{{ order.shippingDetails.city }}, {{ order.shippingDetails.department }}</strong
             >
