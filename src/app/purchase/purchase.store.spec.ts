@@ -1,7 +1,17 @@
 import { vi } from 'vitest';
 import { CART_STORAGE_KEY, ORDERS_STORAGE_KEY } from './purchase.constants';
 import { PlaceOrderInput } from './purchase.models';
+import { SAMPLE_PRODUCTS } from './purchase.data';
 import { PurchaseStore } from './purchase.store';
+import type { Product } from '../shared/models/product.model';
+
+const additionalProduct: Product = {
+  ...SAMPLE_PRODUCTS[0],
+  id: 4,
+  name: 'Fresas frescas',
+  description: 'Fresas de cosecha local.',
+  stock: 3,
+};
 
 const validShippingDetails: PlaceOrderInput = {
   fullName: 'Héctor',
@@ -34,24 +44,64 @@ describe('PurchaseStore cart', () => {
     const store = new PurchaseStore();
 
     for (let index = 0; index < 30; index += 1) {
-      store.changeQuantity('tomate-cherry', 1);
+      store.changeQuantity(1, 1);
     }
 
-    const tomatoes = store.cart().find((item) => item.product.id === 'tomate-cherry');
-    expect(tomatoes?.quantity).toBe(tomatoes?.product.available);
+    const tomatoes = store.cart().find((item) => item.product.id === 1);
+    expect(tomatoes?.quantity).toBe(tomatoes?.product.stock);
     expect(JSON.parse(localStorage.getItem(CART_STORAGE_KEY) ?? '[]')[0].quantity).toBe(
-      tomatoes?.product.available,
+      tomatoes?.product.stock,
     );
   });
 
   it('does not decrement below one and removes an item explicitly', () => {
     const store = new PurchaseStore();
 
-    store.changeQuantity('lechuga-batavia', -1);
-    expect(store.cart().find((item) => item.product.id === 'lechuga-batavia')?.quantity).toBe(1);
+    store.changeQuantity(2, -1);
+    expect(store.cart().find((item) => item.product.id === 2)?.quantity).toBe(1);
 
-    store.removeItem('lechuga-batavia');
-    expect(store.cart().some((item) => item.product.id === 'lechuga-batavia')).toBe(false);
+    store.removeItem(2);
+    expect(store.cart().some((item) => item.product.id === 2)).toBe(false);
+  });
+
+  it('adds a new product to the cart and persists it', () => {
+    const store = new PurchaseStore();
+
+    store.addProduct(additionalProduct);
+
+    expect(store.cart().find((item) => item.product.id === additionalProduct.id)).toEqual({
+      product: additionalProduct,
+      quantity: 1,
+    });
+    expect(store.cartCount()).toBe(5);
+    expect(store.subtotal()).toBe(72_700);
+    expect(JSON.parse(localStorage.getItem(CART_STORAGE_KEY) ?? '[]')).toContainEqual({
+      product: additionalProduct,
+      quantity: 1,
+    });
+    expect(
+      new PurchaseStore().cart().find((item) => item.product.id === additionalProduct.id),
+    ).toEqual({ product: additionalProduct, quantity: 1 });
+  });
+
+  it('increases the quantity when adding a product already in the cart', () => {
+    const store = new PurchaseStore();
+
+    store.addProduct(SAMPLE_PRODUCTS[0]);
+
+    expect(store.cart().find((item) => item.product.id === SAMPLE_PRODUCTS[0].id)?.quantity).toBe(
+      3,
+    );
+  });
+
+  it('does not add products beyond their available stock', () => {
+    const store = new PurchaseStore();
+    const limitedProduct = { ...additionalProduct, stock: 1 };
+
+    store.addProduct(limitedProduct);
+    store.addProduct(limitedProduct);
+
+    expect(store.cart().find((item) => item.product.id === limitedProduct.id)?.quantity).toBe(1);
   });
 
   it('recovers from invalid stored cart data with a visible notice', () => {

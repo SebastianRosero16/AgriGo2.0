@@ -1,9 +1,9 @@
 import { Component, computed, inject } from '@angular/core';
+import { NgFor, NgIf } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { CartItemCard } from '../../shared/cart-item-card/cart-item-card.component';
 import { AppIcon } from '../../shared/icons/app-icon.component';
 import { OrderSummary } from '../../shared/order-summary/order-summary.component';
-import { INITIAL_CART } from '../purchase.data';
 import { CartItem } from '../purchase.models';
 import { PurchaseStore } from '../purchase.store';
 
@@ -16,7 +16,7 @@ interface SellerGroup {
 }
 
 @Component({
-  imports: [CartItemCard, AppIcon, OrderSummary, RouterLink],
+  imports: [CartItemCard, AppIcon, NgFor, NgIf, OrderSummary, RouterLink],
   selector: 'app-cart-page',
   styleUrl: './cart.page.scss',
   templateUrl: './cart.page.html',
@@ -26,7 +26,7 @@ export class CartPage {
 
   protected readonly cart = this.purchaseStore.cart;
   protected readonly itemCount = this.purchaseStore.cartCount;
-  protected priorityProductId = this.cart()[0]?.product.id;
+  protected readonly priorityProductId = computed(() => this.cart()[0]?.product.id);
   protected readonly sellerGroups = computed(() => {
     const groups = new Map<
       string,
@@ -57,8 +57,20 @@ export class CartPage {
     this.purchaseStore.removeItem(item.product.id);
   }
 
+  protected producerInitials(name: string): string {
+    return (
+      name
+        .trim()
+        .split(/\s+/)
+        .filter(Boolean)
+        .slice(0, 2)
+        .map((part) => part.charAt(0))
+        .join('')
+        .toLocaleUpperCase('es-CO') || 'PR'
+    );
+  }
+
   protected restoreDemoCart(): void {
-    this.priorityProductId = INITIAL_CART[0].product.id;
     this.purchaseStore.restoreDemoCart();
   }
 }

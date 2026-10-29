@@ -70,11 +70,12 @@ h1 {
 
 .order-card,
 .no-results {
-  padding: 1.3rem;
+  padding: 0;
   background: var(--surface-card);
   border: 1px solid var(--gray-200);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-xl);
   box-shadow: var(--shadow-card);
+  overflow: hidden;
 }
 
 .order-header,
@@ -86,7 +87,8 @@ h1 {
 }
 
 .order-header {
-  padding-bottom: 1rem;
+  padding: 1rem 1.2rem;
+  background: var(--gray-50);
   border-bottom: 1px solid var(--gray-100);
 }
 
@@ -109,10 +111,10 @@ h1 {
   align-items: center;
   gap: 0.3rem;
   padding: 0.35rem 0.65rem;
-  color: var(--green-700);
-  background: var(--green-50);
-  border: 1px solid var(--green-100);
-  border-radius: 999px;
+  color: var(--gray-600);
+  background: white;
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-md);
   font-size: 0.75rem;
   font-weight: 700;
 }
@@ -121,7 +123,7 @@ h1 {
   display: flex;
   flex-wrap: wrap;
   gap: 0.65rem;
-  padding: 1rem 0;
+  padding: 1rem 1.2rem;
 }
 
 .product-thumbnail,
@@ -169,7 +171,7 @@ h1 {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 1rem;
-  padding: 1rem 0;
+  padding: 1rem 1.2rem;
   border-top: 1px solid var(--gray-100);
 }
 
@@ -201,7 +203,7 @@ h1 {
 }
 
 .order-footer {
-  padding-top: 0.9rem;
+  padding: 0.9rem 1.2rem;
   border-top: 1px solid var(--gray-100);
 }
 
@@ -249,10 +251,7 @@ h1 {
 
 .no-results {
   text-align: center;
-}
-
-.no-results p {
-  margin-bottom: 0;
+  padding: 1.4rem;
 }
 
 @media (max-width: 680px) {
@@ -276,8 +275,17 @@ h1 {
 }
 
 @media (max-width: 500px) {
-  .order-card {
-    padding: 1rem;
+  .order-header,
+  .order-products,
+  .order-details,
+  .order-footer {
+    padding-right: 1rem;
+    padding-left: 1rem;
+  }
+
+  .order-header {
+    align-items: flex-start;
+    flex-direction: column;
   }
 
   .order-footer {

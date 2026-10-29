@@ -21,7 +21,7 @@
         <button
           type="button"
           [attr.aria-label]="'Aumentar cantidad de ' + item().product.name"
-          [disabled]="item().quantity >= item().product.available"
+          [disabled]="item().quantity >= item().product.stock"
           (click)="quantityChange.emit(1)"
         >
           <app-icon name="plus" />

@@ -5,23 +5,26 @@
 .summary-card {
   position: sticky;
   top: 1rem;
-  padding: 1.35rem;
+  padding: 0;
   background: var(--surface-card);
   border: 1px solid var(--gray-200);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-xl);
   box-shadow: var(--shadow-card);
+  overflow: hidden;
 }
 
 .summary-card h2 {
-  margin: 0 0 1.2rem;
+  margin: 0;
+  padding: 1rem 1.25rem;
+  background: var(--gray-50);
+  border-bottom: 1px solid var(--gray-200);
   color: var(--gray-900);
   font-family: var(--font-display);
-  font-size: 1.05rem;
+  font-size: 1rem;
 }
 
 .summary-items {
-  padding-bottom: 0.5rem;
-  border-bottom: 1px solid var(--gray-100);
+  padding: 0.35rem 1.25rem;
 }
 
 .summary-item {
@@ -29,7 +32,7 @@
   grid-template-columns: 44px minmax(0, 1fr) auto;
   align-items: start;
   gap: 0.7rem;
-  margin: 0.8rem 0;
+  margin: 0.7rem 0;
   color: var(--gray-600);
   font-size: 0.77rem;
 }
@@ -81,7 +84,8 @@
 }
 
 .summary-row {
-  margin: 0.75rem 0;
+  margin: 0 1.25rem;
+  padding: 0.55rem 0;
   color: var(--gray-600);
   font-size: 0.88rem;
 }
@@ -92,8 +96,8 @@
 }
 
 .summary-total {
-  margin-top: 1rem;
-  padding-top: 1rem;
+  margin: 0.4rem 1.25rem 0;
+  padding: 0.9rem 0;
   border-top: 1px solid var(--gray-200);
   color: var(--gray-900);
   font-weight: 700;
@@ -106,9 +110,12 @@
 }
 
 .summary-note {
-  margin: 1rem 0;
+  margin: 0.25rem 1.25rem 0;
+  padding: 0.75rem 0;
   color: var(--gray-500);
-  font-size: 0.76rem;
+  border-top: 1px solid var(--gray-100);
+  font-size: 0.74rem;
+  line-height: 1.5;
 }
 
 .checkout-button {
@@ -116,9 +123,10 @@
   align-items: center;
   justify-content: space-between;
   gap: 0.7rem;
-  width: 100%;
+  width: calc(100% - 2.5rem);
   min-height: 46px;
   padding: 0.7rem 1rem;
+  margin: 0.8rem 1.25rem 1.25rem;
   color: white;
   background: var(--green-700);
   border-radius: var(--radius-md);
@@ -139,6 +147,36 @@
 
 @media (max-width: 560px) {
   .summary-card {
+    padding: 0;
+  }
+
+  .summary-card h2 {
     padding: 1rem;
+  }
+
+  .summary-items {
+    padding-right: 1rem;
+    padding-left: 1rem;
+  }
+
+  .summary-row {
+    margin-right: 1rem;
+    margin-left: 1rem;
+  }
+
+  .summary-total {
+    margin-right: 1rem;
+    margin-left: 1rem;
+  }
+
+  .summary-note {
+    margin-right: 1rem;
+    margin-left: 1rem;
+  }
+
+  .checkout-button {
+    width: calc(100% - 2rem);
+    margin-right: 1rem;
+    margin-left: 1rem;
   }
 }

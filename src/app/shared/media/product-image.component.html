@@ -1,9 +1,9 @@
 <img
-  [ngSrc]="product().imageSrc"
-  [alt]="product().imageAlt"
+  [ngSrc]="product().imageUrl"
+  [alt]="product().name"
   width="240"
   height="240"
   [priority]="priority()"
-  [attr.loading]="priority() ? null : 'lazy'"
+  [loading]="priority() ? undefined : eager() ? 'eager' : 'lazy'"
   decoding="async"
 />

@@ -6,11 +6,11 @@ import {
   SHIPPING_COST,
 } from './purchase.constants';
 import { INITIAL_CART } from './purchase.data';
+import type { Product } from '../shared/models/product.model';
 import {
   CartItem,
   OrderCreationResult,
   PlaceOrderInput,
-  Product,
   PurchaseOrder,
   ShippingDetails,
 } from './purchase.models';
@@ -35,7 +35,7 @@ export class PurchaseStore {
     this.orders.set(this.readOrders());
   }
 
-  changeQuantity(productId: string, change: -1 | 1): void {
+  changeQuantity(productId: number, change: -1 | 1): void {
     const nextCart = this.cart().map((item) => {
       if (item.product.id !== productId) {
         return item;
@@ -43,7 +43,7 @@ export class PurchaseStore {
 
       const quantity = Math.max(
         1,
-        Math.min(item.product.available, MAX_QUANTITY_PER_PRODUCT, item.quantity + change),
+        Math.min(item.product.stock, MAX_QUANTITY_PER_PRODUCT, item.quantity + change),
       );
       return { ...item, quantity };
     });
@@ -51,8 +51,33 @@ export class PurchaseStore {
     this.saveCart(nextCart);
   }
 
-  removeItem(productId: string): void {
+  removeItem(productId: number): void {
     this.saveCart(this.cart().filter((item) => item.product.id !== productId));
+  }
+
+  addProduct(product: Product): void {
+    if (!this.isProduct(product) || product.stock < 1) {
+      return;
+    }
+
+    const existingItem = this.cart().find((item) => item.product.id === product.id);
+    const maximumQuantity = Math.min(product.stock, MAX_QUANTITY_PER_PRODUCT);
+    const nextQuantity = existingItem ? Math.min(existingItem.quantity + 1, maximumQuantity) : 1;
+    if (
+      existingItem &&
+      existingItem.quantity === nextQuantity &&
+      existingItem.product === product
+    ) {
+      return;
+    }
+
+    const nextCart = existingItem
+      ? this.cart().map((item) =>
+          item.product.id === product.id ? { product, quantity: nextQuantity } : item,
+        )
+      : [...this.cart(), { product, quantity: nextQuantity }];
+
+    this.saveCart(nextCart);
   }
 
   restoreDemoCart(): boolean {
@@ -175,27 +200,40 @@ export class PurchaseStore {
       return false;
     }
     const item = value as Partial<CartItem>;
-    const product = item.product as Partial<Product> | undefined;
+    const product = item.product;
     return (
       typeof item.quantity === 'number' &&
       Number.isInteger(item.quantity) &&
       item.quantity > 0 &&
       item.quantity <= MAX_QUANTITY_PER_PRODUCT &&
-      typeof product?.id === 'string' &&
+      this.isProduct(product) &&
+      item.quantity <= product.stock
+    );
+  }
+
+  private isProduct(value: unknown): value is Product {
+    if (typeof value !== 'object' || value === null) {
+      return false;
+    }
+
+    const product = value as Partial<Product>;
+    return (
+      typeof product.id === 'number' &&
+      Number.isInteger(product.id) &&
+      product.id > 0 &&
       typeof product.name === 'string' &&
+      typeof product.description === 'string' &&
       typeof product.category === 'string' &&
       typeof product.price === 'number' &&
       Number.isFinite(product.price) &&
       product.price >= 0 &&
-      typeof product.available === 'number' &&
-      Number.isInteger(product.available) &&
-      product.available > 0 &&
+      typeof product.stock === 'number' &&
+      Number.isInteger(product.stock) &&
+      product.stock >= 0 &&
       typeof product.unit === 'string' &&
       typeof product.producer === 'string' &&
       typeof product.location === 'string' &&
-      typeof product.imageSrc === 'string' &&
-      typeof product.imageAlt === 'string' &&
-      item.quantity <= product.available
+      typeof product.imageUrl === 'string'
     );
   }
 

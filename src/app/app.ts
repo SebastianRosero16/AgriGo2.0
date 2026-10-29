@@ -1,10 +1,11 @@
 import { Component, inject } from '@angular/core';
+import { NgIf } from '@angular/common';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { PurchaseStore } from './purchase/purchase.store';
 import { AppIcon } from './shared/icons/app-icon.component';
 
 @Component({
-  imports: [AppIcon, RouterLink, RouterLinkActive, RouterOutlet],
+  imports: [AppIcon, NgIf, RouterLink, RouterLinkActive, RouterOutlet],
   selector: 'app-root',
   styleUrl: './app.scss',
   templateUrl: './app.html',
