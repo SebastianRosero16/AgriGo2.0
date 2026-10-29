@@ -73,10 +73,15 @@ describe('PurchaseStore cart', () => {
       product: additionalProduct,
       quantity: 1,
     });
+    expect(store.cartCount()).toBe(5);
+    expect(store.subtotal()).toBe(72_700);
     expect(JSON.parse(localStorage.getItem(CART_STORAGE_KEY) ?? '[]')).toContainEqual({
       product: additionalProduct,
       quantity: 1,
     });
+    expect(
+      new PurchaseStore().cart().find((item) => item.product.id === additionalProduct.id),
+    ).toEqual({ product: additionalProduct, quantity: 1 });
   });
 
   it('increases the quantity when adding a product already in the cart', () => {
