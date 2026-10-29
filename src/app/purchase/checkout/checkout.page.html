@@ -17,6 +17,23 @@
   </div>
 
   <ng-template #checkoutFormTemplate>
+    <ol class="checkout-progress" aria-label="Progreso del pedido">
+      <li class="checkout-progress__step is-complete">
+        <span class="checkout-progress__marker"><app-icon name="check" /></span>
+        <span>Carrito</span>
+      </li>
+      <li class="checkout-progress__divider" aria-hidden="true"></li>
+      <li class="checkout-progress__step is-current" aria-current="step">
+        <span class="checkout-progress__marker">2</span>
+        <span>Datos de entrega</span>
+      </li>
+      <li class="checkout-progress__divider" aria-hidden="true"></li>
+      <li class="checkout-progress__step">
+        <span class="checkout-progress__marker">3</span>
+        <span>Confirmación</span>
+      </li>
+    </ol>
+
     <div class="checkout-layout">
       <form class="checkout-form" [formGroup]="checkoutForm" (ngSubmit)="submitOrder()" novalidate>
         <section class="form-card" aria-labelledby="delivery-title">
@@ -204,7 +221,7 @@
             <span class="step-number">3</span>
             <div>
               <h2 id="payment-title">Método de pago simulado</h2>
-              <p>No se procesarán pagos ni se pedirán datos bancarios.</p>
+              <p>Elige una preferencia; este prototipo no gestiona pagos.</p>
             </div>
           </div>
           <div class="payment-options">
@@ -216,11 +233,11 @@
                 <small>
                   <ng-container *ngIf="method.value === 'cash'; else transferDescription">
                     <app-icon name="receipt" />
-                    Paga en efectivo cuando recibas el pedido.
+                    Se guardará como preferencia; no se registrará ningún pago.
                   </ng-container>
                   <ng-template #transferDescription>
                     <app-icon name="bank" />
-                    El registro de la transferencia es solo demostrativo.
+                    No se enviará ni confirmará ninguna transferencia.
                   </ng-template>
                 </small>
               </span>
@@ -239,7 +256,7 @@
         [items]="cart()"
         [shipping]="shippingCost"
         [showItems]="true"
-        note="Orden de demostración. No se realizará un cobro."
+        note="Prototipo académico: no se procesa el pago ni se envía el pedido."
       />
     </div>
   </ng-template>

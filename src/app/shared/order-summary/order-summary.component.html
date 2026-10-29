@@ -6,7 +6,7 @@
       <div class="summary-image">
         <app-product-image
           [product]="item.product"
-          [priority]="item.product.id === priorityProductId"
+          [priority]="item.product.id === priorityProductId()"
         />
         <span class="summary-quantity" [attr.aria-label]="item.quantity + ' unidades'">
           {{ item.quantity }}
@@ -24,7 +24,7 @@
   <div class="summary-row">
     <span>Envío</span>
     <ng-container *ngIf="shipping() === 0; else shippingAmount">
-      <span class="shipping-value">Gratis</span>
+      <span class="shipping-value">No calculado</span>
     </ng-container>
     <ng-template #shippingAmount>
       <span class="shipping-value">{{ formatCop(shipping()) }}</span>

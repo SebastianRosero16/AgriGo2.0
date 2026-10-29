@@ -16,32 +16,35 @@
 
 .seller-group {
   display: grid;
-  gap: 0.65rem;
+  gap: 0;
+  overflow: hidden;
+  background: var(--surface-card);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-card);
 }
 
 .producer-card {
-  position: relative;
   display: flex;
   align-items: center;
-  gap: 1rem;
-  padding: 1.1rem 1.25rem;
-  background: linear-gradient(110deg, #f3faf5, var(--surface-card) 68%);
-  border: 1px solid var(--gray-200);
-  border-radius: var(--radius-xl);
-  box-shadow: 0 3px 12px rgb(13 43 26 / 4%);
+  gap: 0.8rem;
+  padding: 0.9rem 1.15rem;
+  background: var(--gray-50);
+  border-bottom: 1px solid var(--gray-200);
 }
 
 .producer-mark {
   display: grid;
-  width: 48px;
-  height: 48px;
+  width: 38px;
+  height: 38px;
   flex: 0 0 auto;
   place-items: center;
-  color: var(--green-700);
-  background: linear-gradient(145deg, #dff4e5, #c9ebd3);
-  border: 1px solid #c5e8cf;
-  border-radius: 16px;
-  font-size: 1.15rem;
+  color: white;
+  background: var(--green-700);
+  border-radius: 50%;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
 }
 
 .producer-details {
@@ -53,8 +56,7 @@
   margin: 0 0 0.12rem;
   color: var(--gray-900);
   font-family: var(--font-display);
-  font-size: 1rem;
-  letter-spacing: -0.02em;
+  font-size: 0.92rem;
 }
 
 .producer-details p,
@@ -80,7 +82,11 @@
 
 .seller-items {
   display: grid;
-  gap: 0.65rem;
+  gap: 0;
+}
+
+.seller-items app-cart-item-card + app-cart-item-card {
+  border-top: 1px solid var(--gray-100);
 }
 
 .producer-status {
@@ -168,14 +174,13 @@
 
 @media (max-width: 560px) {
   .producer-card {
-    gap: 0.7rem;
+    gap: 0.65rem;
     padding: 0.85rem;
   }
 
   .producer-mark {
-    width: 40px;
-    height: 40px;
-    border-radius: 13px;
+    width: 34px;
+    height: 34px;
   }
 
   .producer-status {

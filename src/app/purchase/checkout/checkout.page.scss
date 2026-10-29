@@ -34,7 +34,7 @@
   min-height: 74px;
   padding: 0.9rem 1.35rem;
   margin: -1.35rem -1.35rem 1.2rem;
-  background: linear-gradient(110deg, #f3f8f4, #fafcfb);
+  background: var(--gray-50);
   border-bottom: 1px solid var(--gray-200);
   border-radius: var(--radius-lg) var(--radius-lg) 0 0;
 }
