@@ -73,8 +73,12 @@ h1 {
   padding: 1.3rem;
   background: var(--surface-card);
   border: 1px solid var(--gray-200);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-card);
+  border-radius: var(--radius-xl);
+  box-shadow: 0 3px 12px rgb(13 43 26 / 4%);
+}
+
+.order-card {
+  border-left: 4px solid var(--green-600);
 }
 
 .order-header,
