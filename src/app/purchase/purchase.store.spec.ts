@@ -104,6 +104,26 @@ describe('PurchaseStore cart', () => {
     expect(store.cart().find((item) => item.product.id === limitedProduct.id)?.quantity).toBe(1);
   });
 
+  it('keeps the current cart when an update cannot be persisted', () => {
+    const store = new PurchaseStore();
+    const originalCart = store.cart();
+    const originalSetItem = Storage.prototype.setItem;
+    const setItem = vi.spyOn(Storage.prototype, 'setItem').mockImplementation((key, value) => {
+      if (key === CART_STORAGE_KEY) {
+        throw new DOMException('Storage is unavailable.', 'SecurityError');
+      }
+      originalSetItem.call(localStorage, key, value);
+    });
+
+    store.addProduct(additionalProduct);
+
+    expect(store.cart()).toEqual(originalCart);
+    expect(store.cartCount()).toBe(4);
+    expect(store.persistenceNotice()).toContain('Los cambios se conservarán solo mientras');
+    expect(JSON.parse(localStorage.getItem(CART_STORAGE_KEY) ?? '[]')).toEqual(originalCart);
+    setItem.mockRestore();
+  });
+
   it('recovers from invalid stored cart data with a visible notice', () => {
     localStorage.setItem(CART_STORAGE_KEY, JSON.stringify([{ quantity: 1 }]));
     const store = new PurchaseStore();

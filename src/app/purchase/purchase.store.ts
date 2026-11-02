@@ -180,8 +180,9 @@ export class PurchaseStore {
   }
 
   private saveCart(cart: CartItem[]): void {
-    this.cart.set(cart);
-    this.persist(CART_STORAGE_KEY, cart);
+    if (this.persist(CART_STORAGE_KEY, cart)) {
+      this.cart.set(cart);
+    }
   }
 
   private persist(key: string, value: unknown): boolean {
