@@ -1,53 +1,64 @@
 <section aria-labelledby="confirmation-title">
-  @if (order(); as confirmedOrder) {
+  <ng-container *ngIf="order() as confirmedOrder; else missingOrder">
     <div class="confirmation-card">
       <div class="confirmation-hero">
         <div class="success-mark" aria-hidden="true"><app-icon name="check" /></div>
-        <p class="eyebrow">Pedido de demostración registrado</p>
-        <h1 id="confirmation-title">¡Gracias por tu pedido!</h1>
-        <p class="confirmation-copy">
-          La orden quedó guardada en este navegador. No se procesó ningún pago ni se notificó a un
-          vendedor.
-        </p>
+        <div class="confirmation-message">
+          <p class="eyebrow">Pedido de demostración</p>
+          <h1 id="confirmation-title">Tu pedido quedó registrado</h1>
+          <p class="confirmation-copy">
+            Se guardó en este navegador. No se procesó un pago ni se envió información al productor.
+          </p>
+        </div>
 
         <div class="order-reference">
           <span>Número de orden</span>
-          <strong>{{ confirmedOrder.id }}</strong>
+          <strong>{{ formatOrderReference(confirmedOrder.id) }}</strong>
           <small>{{ formatOrderDate(confirmedOrder.createdAt) }}</small>
         </div>
       </div>
 
       <div class="confirmation-grid">
         <section class="detail-card" aria-labelledby="items-title">
-          <h2 id="items-title">Productos del pedido</h2>
-          @for (item of confirmedOrder.items; track item.product.id) {
-            <div class="detail-row">
-              <span>{{ item.quantity }} × {{ item.product.name }}</span>
-              <strong>{{ formatCop(item.quantity * item.product.price) }}</strong>
-            </div>
-          }
+          <h2 id="items-title"><app-icon name="package" /> Productos</h2>
+          <div *ngFor="let item of confirmedOrder.items; let first = first" class="product-row">
+            <app-product-image [product]="item.product" [priority]="first" [eager]="true" />
+            <span class="product-description">
+              <strong>{{ item.product.name }}</strong>
+              <small>
+                {{ item.product.producer }} · {{ item.quantity }} × {{ item.product.unit }}
+              </small>
+            </span>
+            <strong class="product-total">
+              {{ formatCop(item.quantity * item.product.price) }}
+            </strong>
+          </div>
+          <div class="detail-row subtotal-row">
+            <span>Subtotal</span>
+            <strong>{{ formatCop(confirmedOrder.subtotal) }}</strong>
+          </div>
           <div class="detail-row">
             <span>Envío</span>
             <strong>{{
-              confirmedOrder.shipping === 0 ? 'Gratis' : formatCop(confirmedOrder.shipping)
+              confirmedOrder.shipping === 0 ? 'No calculado' : formatCop(confirmedOrder.shipping)
             }}</strong>
           </div>
           <div class="detail-row total-row">
-            <span>Total</span>
+            <span>Total de demostración</span>
             <strong>{{ formatCop(confirmedOrder.total) }}</strong>
           </div>
         </section>
 
         <section class="detail-card" aria-labelledby="delivery-title">
-          <h2 id="delivery-title">Dirección de entrega</h2>
+          <h2 id="delivery-title"><app-icon name="mapPin" /> Datos de entrega</h2>
           <p class="detail-name">{{ confirmedOrder.shippingDetails.fullName }}</p>
           <p>{{ confirmedOrder.shippingDetails.address }}</p>
           <p>
             {{ confirmedOrder.shippingDetails.city }},
             {{ confirmedOrder.shippingDetails.department }}
-            @if (confirmedOrder.shippingDetails.postalCode) {
+            <ng-container *ngIf="confirmedOrder.shippingDetails.postalCode">
               · {{ confirmedOrder.shippingDetails.postalCode }}
-            }
+            </ng-container>
           </p>
           <p>{{ confirmedOrder.shippingDetails.phone }}</p>
           <div class="delivery-note">
@@ -56,15 +67,13 @@
             <span>{{ deliveryWindowLabel(confirmedOrder.shippingDetails.deliveryWindow) }}</span>
           </div>
           <div class="delivery-note">
-            <span>Método de pago simulado</span>
+            <span>Preferencia de pago · no procesada</span>
             <strong>{{ paymentMethodLabel(confirmedOrder.shippingDetails.paymentMethod) }}</strong>
           </div>
-          @if (confirmedOrder.shippingDetails.instructions) {
-            <div class="delivery-note">
-              <span>Instrucciones</span>
-              <strong>{{ confirmedOrder.shippingDetails.instructions }}</strong>
-            </div>
-          }
+          <div *ngIf="confirmedOrder.shippingDetails.instructions" class="delivery-note">
+            <span>Instrucciones</span>
+            <strong>{{ confirmedOrder.shippingDetails.instructions }}</strong>
+          </div>
         </section>
       </div>
 
@@ -73,12 +82,14 @@
         <a class="button button-primary" routerLink="/cart">Volver al carrito</a>
       </div>
     </div>
-  } @else {
+  </ng-container>
+
+  <ng-template #missingOrder>
     <div class="not-found-card">
       <p class="eyebrow">Pedido no disponible</p>
       <h1 id="confirmation-title">No encontramos esta orden</h1>
       <p>El historial se guarda en el navegador donde se creó el pedido.</p>
       <a class="button button-primary" routerLink="/orders">Ir a mis pedidos</a>
     </div>
-  }
+  </ng-template>
 </section>

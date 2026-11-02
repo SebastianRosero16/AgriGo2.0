@@ -1,6 +1,6 @@
 import { Component, input } from '@angular/core';
 import { NgOptimizedImage } from '@angular/common';
-import { Product } from '../../purchase/purchase.models';
+import type { Product } from '../models/product.model';
 
 @Component({
   imports: [NgOptimizedImage],
@@ -11,4 +11,5 @@ import { Product } from '../../purchase/purchase.models';
 export class ProductImage {
   readonly product = input.required<Product>();
   readonly priority = input(false);
+  readonly eager = input(false);
 }

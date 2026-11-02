@@ -1,5 +1,5 @@
-export const CART_STORAGE_KEY = 'agrigo.purchase.cart.v1';
-export const ORDERS_STORAGE_KEY = 'agrigo.purchase.orders.v1';
+export const CART_STORAGE_KEY = 'agrigo.purchase.cart.v2';
+export const ORDERS_STORAGE_KEY = 'agrigo.purchase.orders.v2';
 export const SHIPPING_COST = 0;
 export const MAX_QUANTITY_PER_PRODUCT = 99;
 
